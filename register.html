@@ -22,12 +22,18 @@
 
         <div class="auth-container">
 
+            <!-- LOGO -->
+
             <div class="auth-logo">
+
                 <a href="index.html">
                     Client<span>Flow</span>
                 </a>
+
             </div>
 
+
+            <!-- FORMULAIRE -->
 
             <div class="auth-card">
 
@@ -46,6 +52,8 @@
 
                 <form id="registerForm">
 
+                    <!-- NOM -->
+
                     <div class="form-group">
 
                         <label for="name">
@@ -57,11 +65,14 @@
                             id="name"
                             name="name"
                             placeholder="Votre nom"
+                            autocomplete="name"
                             required
                         >
 
                     </div>
 
+
+                    <!-- EMAIL -->
 
                     <div class="form-group">
 
@@ -74,11 +85,14 @@
                             id="email"
                             name="email"
                             placeholder="vous@exemple.com"
+                            autocomplete="email"
                             required
                         >
 
                     </div>
 
+
+                    <!-- MOT DE PASSE -->
 
                     <div class="form-group">
 
@@ -86,17 +100,33 @@
                             Mot de passe
                         </label>
 
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Minimum 6 caractères"
-                            minlength="6"
-                            required
-                        >
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Minimum 6 caractères"
+                                minlength="6"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('password', this)"
+                                aria-label="Afficher le mot de passe"
+                            >
+                                👁️
+                            </button>
+
+                        </div>
 
                     </div>
 
+
+                    <!-- CONFIRMATION MOT DE PASSE -->
 
                     <div class="form-group">
 
@@ -104,23 +134,41 @@
                             Confirmer le mot de passe
                         </label>
 
-                        <input
-                            type="password"
-                            id="password-confirm"
-                            name="password-confirm"
-                            placeholder="Répétez votre mot de passe"
-                            minlength="6"
-                            required
-                        >
+                        <div class="password-wrapper">
+
+                            <input
+                                type="password"
+                                id="password-confirm"
+                                name="password-confirm"
+                                placeholder="Répétez votre mot de passe"
+                                minlength="6"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('password-confirm', this)"
+                                aria-label="Afficher la confirmation du mot de passe"
+                            >
+                                👁️
+                            </button>
+
+                        </div>
 
                     </div>
 
+
+                    <!-- MESSAGE -->
 
                     <div
                         id="registerMessage"
                         class="form-message"
                     ></div>
 
+
+                    <!-- BOUTON -->
 
                     <button
                         type="submit"
@@ -132,19 +180,26 @@
                 </form>
 
 
+                <!-- CONNEXION -->
+
                 <div class="auth-footer">
 
                     <p>
+
                         Vous avez déjà un compte ?
+
                         <a href="login.html">
                             Se connecter
                         </a>
+
                     </p>
 
                 </div>
 
             </div>
 
+
+            <!-- RETOUR -->
 
             <div class="back-home">
 
@@ -157,6 +212,43 @@
         </div>
 
     </main>
+
+
+    <!-- JAVASCRIPT POUR AFFICHER/MASQUER LE MOT DE PASSE -->
+
+    <script>
+
+        function togglePassword(inputId, button) {
+
+            const input = document.getElementById(inputId);
+
+            if (input.type === "password") {
+
+                input.type = "text";
+
+                button.textContent = "🙈";
+
+                button.setAttribute(
+                    "aria-label",
+                    "Masquer le mot de passe"
+                );
+
+            } else {
+
+                input.type = "password";
+
+                button.textContent = "👁️";
+
+                button.setAttribute(
+                    "aria-label",
+                    "Afficher le mot de passe"
+                );
+
+            }
+
+        }
+
+    </script>
 
 </body>
 
