@@ -1,0 +1,553 @@
+/* ================================
+   CLIENTFLOW — STYLE PRINCIPAL
+================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f7f8fc;
+    color: #172033;
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* ================================
+   NAVIGATION
+================================ */
+
+.navbar {
+    width: 100%;
+    padding: 20px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border-bottom: 1px solid #e8eaf0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.logo span {
+    color: #4f46e5;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+nav a {
+    font-size: 15px;
+    color: #596174;
+    transition: 0.3s;
+}
+
+nav a:hover {
+    color: #4f46e5;
+}
+
+.btn-nav {
+    background: #4f46e5;
+    color: white !important;
+    padding: 11px 18px;
+    border-radius: 8px;
+}
+
+
+/* ================================
+   HERO
+================================ */
+
+.hero {
+    min-height: 650px;
+    padding: 100px 7%;
+    display: flex;
+    align-items: center;
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(79, 70, 229, 0.13),
+            transparent 35%
+        ),
+        linear-gradient(
+            135deg,
+            #ffffff,
+            #f3f5ff
+        );
+}
+
+.hero-content {
+    max-width: 760px;
+}
+
+.badge {
+    display: inline-block;
+    margin-bottom: 25px;
+    padding: 8px 14px;
+    border-radius: 50px;
+    background: #ebe9ff;
+    color: #4f46e5;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.hero h1 {
+    font-size: clamp(48px, 7vw, 82px);
+    line-height: 1.05;
+    letter-spacing: -3px;
+    margin-bottom: 28px;
+}
+
+.hero h1 span {
+    display: block;
+    color: #4f46e5;
+}
+
+.hero-text {
+    max-width: 650px;
+    color: #687084;
+    font-size: 19px;
+    margin-bottom: 38px;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 14px 22px;
+    border-radius: 9px;
+    background: #4f46e5;
+    color: white;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.btn-primary:hover {
+    background: #3730a3;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 14px 22px;
+    border: 1px solid #d9dce5;
+    border-radius: 9px;
+    background: white;
+    color: #293044;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.btn-secondary:hover {
+    border-color: #4f46e5;
+    color: #4f46e5;
+}
+
+
+/* ================================
+   SECTIONS
+================================ */
+
+.features,
+.pricing {
+    padding: 100px 7%;
+}
+
+.section-heading {
+    max-width: 650px;
+    margin: 0 auto 60px;
+    text-align: center;
+}
+
+.small-title {
+    color: #4f46e5;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.section-heading h2 {
+    font-size: 42px;
+    line-height: 1.15;
+    margin-bottom: 15px;
+}
+
+.section-heading p:last-child {
+    color: #70788b;
+}
+
+
+/* ================================
+   FEATURE CARDS
+================================ */
+
+.feature-grid {
+    max-width: 1100px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.feature-card {
+    background: white;
+    padding: 30px;
+    border: 1px solid #e8eaf0;
+    border-radius: 16px;
+    transition: 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(24, 30, 55, 0.08);
+}
+
+.icon {
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+.feature-card h3 {
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    color: #70788b;
+    font-size: 14px;
+}
+
+
+/* ================================
+   TARIFS
+================================ */
+
+.pricing {
+    background: #eef0f8;
+}
+
+.pricing-card {
+    max-width: 420px;
+    margin: auto;
+    padding: 40px;
+    background: white;
+    border-radius: 20px;
+    border: 1px solid #e0e2eb;
+    box-shadow: 0 20px 50px rgba(25, 30, 55, 0.08);
+    text-align: center;
+}
+
+.pricing-card h3 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.price {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 25px;
+}
+
+.price span {
+    font-size: 14px;
+    color: #777f91;
+    font-weight: 400;
+}
+
+.pricing-card ul {
+    list-style: none;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.pricing-card li {
+    padding: 9px 0;
+    color: #555d70;
+}
+
+
+/* ================================
+   FOOTER
+================================ */
+
+footer {
+    padding: 35px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #111827;
+    color: white;
+}
+
+footer p {
+    color: #aeb4c2;
+    font-size: 13px;
+}
+
+
+/* ================================
+   RESPONSIVE MOBILE
+================================ */
+
+@media (max-width: 850px) {
+
+    .navbar {
+        padding: 18px 5%;
+    }
+
+    nav {
+        gap: 12px;
+    }
+
+    nav a:not(.btn-nav) {
+        display: none;
+    }
+
+    .hero {
+        min-height: 600px;
+        padding: 80px 5%;
+    }
+
+    .hero h1 {
+        letter-spacing: -2px;
+    }
+
+    .feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .features,
+    .pricing {
+        padding: 80px 5%;
+    }
+
+    .section-heading h2 {
+        font-size: 34px;
+    }
+
+    footer {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+}
+
+
+@media (max-width: 550px) {
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-text {
+        font-size: 17px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hero-buttons a {
+        text-align: center;
+    }
+
+    .pricing-card {
+        padding: 30px 22px;
+    }
+}
+/* ================================
+   AUTHENTIFICATION
+================================ */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+
+    background:
+        radial-gradient(
+            circle at top right,
+            rgba(79, 70, 229, 0.12),
+            transparent 35%
+        ),
+        #f7f8fc;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 460px;
+}
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-logo a {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.auth-logo span {
+    color: #4f46e5;
+}
+
+.auth-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid #e5e7ef;
+    box-shadow: 0 20px 60px rgba(20, 25, 45, 0.08);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.auth-header h1 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.auth-header p {
+    color: #70788b;
+    font-size: 14px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #30384b;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 14px 15px;
+    border: 1px solid #dfe2ea;
+    border-radius: 9px;
+    outline: none;
+    font-size: 15px;
+    background: white;
+    color: #172033;
+    transition: 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.10);
+}
+
+.auth-button {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    background: #4f46e5;
+    color: white;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.auth-button:hover {
+    background: #3730a3;
+}
+
+.form-message {
+    display: none;
+    margin-bottom: 18px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.auth-footer {
+    margin-top: 25px;
+    padding-top: 22px;
+    border-top: 1px solid #eceef3;
+    text-align: center;
+}
+
+.auth-footer p {
+    color: #70788b;
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: #4f46e5;
+    font-weight: 700;
+}
+
+.back-home {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.back-home a {
+    color: #697184;
+    font-size: 14px;
+}
+
+.back-home a:hover {
+    color: #4f46e5;
+}
+
+
+/* ================================
+   MOBILE AUTHENTIFICATION
+================================ */
+
+@media (max-width: 550px) {
+
+    .auth-page {
+        padding: 25px 15px;
+    }
+
+    .auth-card {
+        padding: 28px 22px;
+    }
+
+    .auth-header h1 {
+        font-size: 26px;
+    }
+}
