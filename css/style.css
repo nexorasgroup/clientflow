@@ -551,3 +551,44 @@ footer p {
         font-size: 26px;
     }
 }
+/* ================================
+   AFFICHAGE DU MOT DE PASSE
+================================ */
+
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    padding-right: 55px;
+}
+
+.password-toggle {
+    position: absolute;
+
+    right: 10px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 18px;
+
+    border-radius: 6px;
+}
+
+.password-toggle:hover {
+    background: #f0f1f7;
+}
