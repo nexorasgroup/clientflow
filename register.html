@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Créer un compte — ClientFlow</title>
+
+    <meta
+        name="description"
+        content="Créez votre compte ClientFlow."
+    >
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <main class="auth-page">
+
+        <div class="auth-container">
+
+            <div class="auth-logo">
+                <a href="index.html">
+                    Client<span>Flow</span>
+                </a>
+            </div>
+
+
+            <div class="auth-card">
+
+                <div class="auth-header">
+
+                    <h1>
+                        Créer votre compte
+                    </h1>
+
+                    <p>
+                        Commencez à organiser votre activité avec ClientFlow.
+                    </p>
+
+                </div>
+
+
+                <form id="registerForm">
+
+                    <div class="form-group">
+
+                        <label for="name">
+                            Nom complet
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Votre nom"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Adresse email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="vous@exemple.com"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="password">
+                            Mot de passe
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Minimum 6 caractères"
+                            minlength="6"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="password-confirm">
+                            Confirmer le mot de passe
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password-confirm"
+                            name="password-confirm"
+                            placeholder="Répétez votre mot de passe"
+                            minlength="6"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div
+                        id="registerMessage"
+                        class="form-message"
+                    ></div>
+
+
+                    <button
+                        type="submit"
+                        class="auth-button"
+                    >
+                        Créer mon compte
+                    </button>
+
+                </form>
+
+
+                <div class="auth-footer">
+
+                    <p>
+                        Vous avez déjà un compte ?
+                        <a href="login.html">
+                            Se connecter
+                        </a>
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="back-home">
+
+                <a href="index.html">
+                    ← Retour à l'accueil
+                </a>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>
