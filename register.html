@@ -18,10 +18,7 @@
       padding: 1.5rem;
       color: #0f172a;
     }
-    .box {
-      width: 100%;
-      max-width: 26rem;
-    }
+    .box { width: 100%; max-width: 26rem; }
     .logo {
       text-align: center;
       font-size: 1.5rem;
@@ -36,10 +33,7 @@
       padding: 1.5rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.25rem;
-    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
     .subtitle {
       font-size: 0.875rem;
       color: #64748b;
@@ -52,7 +46,9 @@
       margin-bottom: 0.375rem;
       color: #334155;
     }
-    input {
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
       width: 100%;
       padding: 0.7rem 0.75rem;
       border: 1px solid #e2e8f0;
@@ -65,6 +61,18 @@
       outline: none;
       border-color: #4f46e5;
       box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    }
+    .show-password {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+    .show-password input {
+      width: auto;
+      margin: 0;
     }
     button {
       width: 100%;
@@ -79,10 +87,7 @@
       font-family: inherit;
     }
     button:hover { background: #4338ca; }
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
     .error {
       background: #fef2f2;
       color: #dc2626;
@@ -147,6 +152,11 @@
         <label for="confirm">Confirmer le mot de passe</label>
         <input type="password" id="confirm" placeholder="Répétez votre mot de passe" required />
 
+        <label class="show-password">
+          <input type="checkbox" id="show-password" />
+          Afficher les mots de passe
+        </label>
+
         <button type="submit" id="btn">Créer mon compte</button>
       </form>
 
@@ -162,11 +172,22 @@
   </div>
 
   <script>
+    // Afficher / masquer les mots de passe
+    document.getElementById("show-password").addEventListener("change", function () {
+      const type = this.checked ? "text" : "password";
+      document.getElementById("password").type = type;
+      document.getElementById("confirm").type = type;
+    });
+
     // Si déjà connecté → dashboard
     (async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        window.location.href = "dashboard.html";
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          window.location.href = "dashboard.html";
+        }
+      } catch (e) {
+        console.log("Session check error:", e);
       }
     })();
 
@@ -200,32 +221,48 @@
       btn.disabled = true;
       btn.textContent = "Création en cours...";
 
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName
+      try {
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              full_name: fullName
+            }
           }
-        }
-      });
+        });
 
-      if (error) {
-        errorEl.textContent = error.message || "Une erreur est survenue.";
+        if (error) {
+          errorEl.textContent = error.message || "Une erreur est survenue.";
+          errorEl.style.display = "block";
+          btn.disabled = false;
+          btn.textContent = "Créer mon compte";
+          console.error("Supabase error:", error);
+          return;
+        }
+
+        // Succès
+        if (data.user && !data.session) {
+          // Email de confirmation probablement requis
+          successEl.textContent = "Compte créé ! Vérifiez votre email pour confirmer, puis connectez-vous.";
+          successEl.style.display = "block";
+          btn.disabled = false;
+          btn.textContent = "Créer mon compte";
+        } else {
+          successEl.textContent = "Compte créé avec succès ! Redirection...";
+          successEl.style.display = "block";
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 1200);
+        }
+
+      } catch (err) {
+        errorEl.textContent = "Erreur de connexion à Supabase. Vérifiez votre clé API.";
         errorEl.style.display = "block";
         btn.disabled = false;
         btn.textContent = "Créer mon compte";
-        return;
+        console.error("Catch error:", err);
       }
-
-      // Succès
-      successEl.textContent = "Compte créé avec succès ! Redirection...";
-      successEl.style.display = "block";
-
-      // Redirection vers le dashboard
-      setTimeout(() => {
-        window.location.href = "dashboard.html";
-      }, 1200);
     });
   </script>
 </body>
