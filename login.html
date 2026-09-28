@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion — ClientFlow</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(to bottom, #eef2ff, #f8fafc);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      color: #0f172a;
+    }
+    .box {
+      width: 100%;
+      max-width: 26rem;
+    }
+    .logo {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    .logo span { color: #4f46e5; }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.375rem;
+      color: #334155;
+    }
+    input {
+      width: 100%;
+      padding: 0.7rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      font-size: 0.9375rem;
+      margin-bottom: 1rem;
+      font-family: inherit;
+    }
+    input:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    button:hover { background: #4338ca; }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .error {
+      background: #fef2f2;
+      color: #dc2626;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+    .footer a {
+      color: #4f46e5;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .back {
+      text-align: center;
+      margin-top: 1.25rem;
+    }
+    .back a {
+      font-size: 0.875rem;
+      color: #64748b;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <div class="logo">Client<span>Flow</span></div>
+
+    <div class="card">
+      <h1>Connexion</h1>
+      <p class="subtitle">Accédez à votre espace ClientFlow.</p>
+
+      <div id="error" class="error"></div>
+
+      <form id="login-form">
+        <label for="email">Adresse email</label>
+        <input type="email" id="email" placeholder="vous@exemple.com" required />
+
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" placeholder="Votre mot de passe" required />
+
+        <button type="submit" id="btn">Se connecter</button>
+      </form>
+
+      <p class="footer">
+        Pas encore de compte ?
+        <a href="register.html">Créer un compte</a>
+      </p>
+    </div>
+
+    <p class="back">
+      <a href="index.html">← Retour à l'accueil</a>
+    </p>
+  </div>
+
+  <script>
+    // Vérifier si déjà connecté
+    (async function checkSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = "dashboard.html";
+      }
+    })();
+
+    document.getElementById("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const errorEl = document.getElementById("error");
+      const btn = document.getElementById("btn");
+
+      errorEl.style.display = "none";
+      btn.disabled = true;
+      btn.textContent = "Connexion...";
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        errorEl.textContent = "Email ou mot de passe incorrect.";
+        errorEl.style.display = "block";
+        btn.disabled = false;
+        btn.textContent = "Se connecter";
+        return;
+      }
+
+      // Connexion réussie → dashboard
+      window.location.href = "dashboard.html";
+    });
+  </script>
+</body>
+</html>
