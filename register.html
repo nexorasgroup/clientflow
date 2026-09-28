@@ -1,255 +1,232 @@
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-    <meta charset="UTF-8">
-
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Créer un compte — ClientFlow</title>
-
-    <meta
-        name="description"
-        content="Créez votre compte ClientFlow."
-    >
-
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Créer un compte — ClientFlow</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: linear-gradient(to bottom, #eef2ff, #f8fafc);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      color: #0f172a;
+    }
+    .box {
+      width: 100%;
+      max-width: 26rem;
+    }
+    .logo {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    .logo span { color: #4f46e5; }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
+    .subtitle {
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-bottom: 1.5rem;
+    }
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.375rem;
+      color: #334155;
+    }
+    input {
+      width: 100%;
+      padding: 0.7rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      font-size: 0.9375rem;
+      margin-bottom: 1rem;
+      font-family: inherit;
+    }
+    input:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    }
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #4f46e5;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    button:hover { background: #4338ca; }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .error {
+      background: #fef2f2;
+      color: #dc2626;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .success {
+      background: #ecfdf5;
+      color: #047857;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+    .footer a {
+      color: #4f46e5;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    .back {
+      text-align: center;
+      margin-top: 1.25rem;
+    }
+    .back a {
+      font-size: 0.875rem;
+      color: #64748b;
+      text-decoration: none;
+    }
+  </style>
 </head>
-
 <body>
-
-    <main class="auth-page">
-
-        <div class="auth-container">
-
-            <!-- LOGO -->
-
-            <div class="auth-logo">
-
-                <a href="index.html">
-                    Client<span>Flow</span>
-                </a>
-
-            </div>
-
-
-            <!-- FORMULAIRE -->
-
-            <div class="auth-card">
-
-                <div class="auth-header">
-
-                    <h1>
-                        Créer votre compte
-                    </h1>
-
-                    <p>
-                        Commencez à organiser votre activité avec ClientFlow.
-                    </p>
-
-                </div>
-
-
-                <form id="registerForm">
-
-                    <!-- NOM -->
-
-                    <div class="form-group">
-
-                        <label for="name">
-                            Nom complet
-                        </label>
-
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Votre nom"
-                            autocomplete="name"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- EMAIL -->
-
-                    <div class="form-group">
-
-                        <label for="email">
-                            Adresse email
-                        </label>
-
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="vous@exemple.com"
-                            autocomplete="email"
-                            required
-                        >
-
-                    </div>
-
-
-                    <!-- MOT DE PASSE -->
-
-                    <div class="form-group">
-
-                        <label for="password">
-                            Mot de passe
-                        </label>
-
-                        <div class="password-wrapper">
-
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                placeholder="Minimum 6 caractères"
-                                minlength="6"
-                                autocomplete="new-password"
-                                required
-                            >
-
-                            <button
-                                type="button"
-                                class="password-toggle"
-                                onclick="togglePassword('password', this)"
-                                aria-label="Afficher le mot de passe"
-                            >
-                                👁️
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- CONFIRMATION MOT DE PASSE -->
-
-                    <div class="form-group">
-
-                        <label for="password-confirm">
-                            Confirmer le mot de passe
-                        </label>
-
-                        <div class="password-wrapper">
-
-                            <input
-                                type="password"
-                                id="password-confirm"
-                                name="password-confirm"
-                                placeholder="Répétez votre mot de passe"
-                                minlength="6"
-                                autocomplete="new-password"
-                                required
-                            >
-
-                            <button
-                                type="button"
-                                class="password-toggle"
-                                onclick="togglePassword('password-confirm', this)"
-                                aria-label="Afficher la confirmation du mot de passe"
-                            >
-                                👁️
-                            </button>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- MESSAGE -->
-
-                    <div
-                        id="registerMessage"
-                        class="form-message"
-                    ></div>
-
-
-                    <!-- BOUTON -->
-
-                    <button
-                        type="submit"
-                        class="auth-button"
-                    >
-                        Créer mon compte
-                    </button>
-
-                </form>
-
-
-                <!-- CONNEXION -->
-
-                <div class="auth-footer">
-
-                    <p>
-
-                        Vous avez déjà un compte ?
-
-                        <a href="login.html">
-                            Se connecter
-                        </a>
-
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- RETOUR -->
-
-            <div class="back-home">
-
-                <a href="index.html">
-                    ← Retour à l'accueil
-                </a>
-
-            </div>
-
-        </div>
-
-    </main>
-
-
-    <!-- JAVASCRIPT POUR AFFICHER/MASQUER LE MOT DE PASSE -->
-
-    <script>
-
-        function togglePassword(inputId, button) {
-
-            const input = document.getElementById(inputId);
-
-            if (input.type === "password") {
-
-                input.type = "text";
-
-                button.textContent = "🙈";
-
-                button.setAttribute(
-                    "aria-label",
-                    "Masquer le mot de passe"
-                );
-
-            } else {
-
-                input.type = "password";
-
-                button.textContent = "👁️";
-
-                button.setAttribute(
-                    "aria-label",
-                    "Afficher le mot de passe"
-                );
-
-            }
-
+  <div class="box">
+    <div class="logo">Client<span>Flow</span></div>
+
+    <div class="card">
+      <h1>Créer votre compte</h1>
+      <p class="subtitle">Commencez à organiser votre activité avec ClientFlow.</p>
+
+      <div id="error" class="error"></div>
+      <div id="success" class="success"></div>
+
+      <form id="register-form">
+        <label for="fullname">Nom complet</label>
+        <input type="text" id="fullname" placeholder="Votre nom" required />
+
+        <label for="email">Adresse email</label>
+        <input type="email" id="email" placeholder="vous@exemple.com" required />
+
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" placeholder="Minimum 6 caractères" required minlength="6" />
+
+        <label for="confirm">Confirmer le mot de passe</label>
+        <input type="password" id="confirm" placeholder="Répétez votre mot de passe" required />
+
+        <button type="submit" id="btn">Créer mon compte</button>
+      </form>
+
+      <p class="footer">
+        Vous avez déjà un compte ?
+        <a href="login.html">Se connecter</a>
+      </p>
+    </div>
+
+    <p class="back">
+      <a href="index.html">← Retour à l'accueil</a>
+    </p>
+  </div>
+
+  <script>
+    // Si déjà connecté → dashboard
+    (async function checkSession() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.href = "dashboard.html";
+      }
+    })();
+
+    document.getElementById("register-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fullName = document.getElementById("fullname").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const confirm = document.getElementById("confirm").value;
+
+      const errorEl = document.getElementById("error");
+      const successEl = document.getElementById("success");
+      const btn = document.getElementById("btn");
+
+      errorEl.style.display = "none";
+      successEl.style.display = "none";
+
+      if (password !== confirm) {
+        errorEl.textContent = "Les mots de passe ne correspondent pas.";
+        errorEl.style.display = "block";
+        return;
+      }
+
+      if (password.length < 6) {
+        errorEl.textContent = "Le mot de passe doit contenir au moins 6 caractères.";
+        errorEl.style.display = "block";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Création en cours...";
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName
+          }
         }
+      });
 
-    </script>
+      if (error) {
+        errorEl.textContent = error.message || "Une erreur est survenue.";
+        errorEl.style.display = "block";
+        btn.disabled = false;
+        btn.textContent = "Créer mon compte";
+        return;
+      }
 
+      // Succès
+      successEl.textContent = "Compte créé avec succès ! Redirection...";
+      successEl.style.display = "block";
+
+      // Redirection vers le dashboard
+      setTimeout(() => {
+        window.location.href = "dashboard.html";
+      }, 1200);
+    });
+  </script>
 </body>
-
 </html>
