@@ -23,45 +23,56 @@
       padding: 0 1.25rem;
       position: sticky;
       top: 0;
-      z-index: 20;
+      z-index: 50;
     }
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
+    .logo { font-size: 1.35rem; font-weight: 700; }
     .logo span { color: #4f46e5; }
-    .nav-links {
+    .nav-menu {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.25rem;
     }
-    .nav-links a {
+    .nav-menu a {
       font-size: 0.875rem;
       color: #64748b;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+    }
+    .nav-menu a:hover { background: #f1f5f9; color: #0f172a; }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.625rem 1rem;
+      padding: 0.55rem 1rem;
       border-radius: 0.5rem;
       font-size: 0.875rem;
       font-weight: 500;
       border: none;
       cursor: pointer;
     }
-    .btn-primary {
-      background: #4f46e5;
-      color: white;
-    }
+    .btn-primary { background: #4f46e5; color: white; }
     .btn-secondary {
       background: white;
       border: 1px solid #e2e8f0;
       color: #334155;
     }
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.65rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
     .hero {
-      background: linear-gradient(to bottom, #eef2ff, white);
-      padding: 4rem 1.25rem;
+      background: linear-gradient(160deg, #eef2ff 0%, #f8fafc 60%, white 100%);
+      padding: 4.5rem 1.25rem 4rem;
       text-align: center;
     }
     .badge {
@@ -69,23 +80,23 @@
       background: #e0e7ff;
       color: #4338ca;
       font-size: 0.75rem;
-      font-weight: 500;
-      padding: 0.35rem 0.875rem;
+      font-weight: 600;
+      padding: 0.4rem 1rem;
       border-radius: 9999px;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
     .hero h1 {
-      font-size: clamp(1.75rem, 5vw, 3rem);
+      font-size: clamp(1.85rem, 5vw, 3.1rem);
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.15;
       margin-bottom: 1rem;
     }
     .hero h1 span { color: #4f46e5; }
     .hero p {
       color: #64748b;
       font-size: 1.05rem;
-      max-width: 32rem;
-      margin: 0 auto 1.75rem;
+      max-width: 34rem;
+      margin: 0 auto 2rem;
     }
     .hero-buttons {
       display: flex;
@@ -93,120 +104,131 @@
       justify-content: center;
       flex-wrap: wrap;
     }
+    .hero-buttons .btn { padding: 0.8rem 1.35rem; font-size: 0.95rem; }
     .section {
-      max-width: 64rem;
+      max-width: 68rem;
       margin: 0 auto;
-      padding: 3.5rem 1.25rem;
+      padding: 4rem 1.25rem;
     }
     .section-header {
       text-align: center;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2.75rem;
     }
     .section-header .small {
       color: #4f46e5;
       font-size: 0.8rem;
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
     }
     .section-header h2 {
-      font-size: 1.75rem;
+      font-size: 1.85rem;
       margin: 0.5rem 0;
     }
     .section-header p { color: #64748b; }
     .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1.25rem;
     }
     .feature-card {
       background: white;
       border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
-      padding: 1.5rem;
+      border-radius: 1rem;
+      padding: 1.75rem 1.5rem;
       text-align: center;
     }
-    .feature-card .icon { font-size: 1.75rem; margin-bottom: 0.75rem; }
-    .feature-card h3 {
-      font-size: 1.05rem;
-      margin-bottom: 0.4rem;
-    }
-    .feature-card p {
-      font-size: 0.875rem;
-      color: #64748b;
-    }
-    .pricing {
+    .feature-card .icon { font-size: 2rem; margin-bottom: 0.85rem; }
+    .feature-card h3 { font-size: 1.1rem; margin-bottom: 0.45rem; }
+    .feature-card p { font-size: 0.9rem; color: #64748b; }
+    .pricing-bg {
       background: white;
       border-top: 1px solid #e2e8f0;
+      border-bottom: 1px solid #e2e8f0;
     }
     .pricing-card {
-      max-width: 22rem;
+      max-width: 24rem;
       margin: 0 auto;
-      background: white;
       border: 2px solid #c7d2fe;
-      border-radius: 0.75rem;
-      padding: 1.5rem;
+      border-radius: 1rem;
+      padding: 2rem 1.75rem;
     }
-    .pricing-card h3 { font-size: 1.25rem; }
+    .pricing-card h3 { font-size: 1.35rem; }
     .price {
-      font-size: 2rem;
+      font-size: 2.25rem;
       font-weight: 700;
-      margin: 0.5rem 0 1.25rem;
+      margin: 0.75rem 0 1.5rem;
     }
     .price span {
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       font-weight: 400;
       color: #64748b;
     }
-    .pricing-card ul {
-      list-style: none;
-      margin-bottom: 1.5rem;
-    }
+    .pricing-card ul { list-style: none; margin-bottom: 1.75rem; }
     .pricing-card li {
-      font-size: 0.875rem;
-      color: #64748b;
-      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: #475569;
+      margin-bottom: 0.6rem;
     }
     .pricing-card li::before {
       content: "✓ ";
       color: #10b981;
       font-weight: 700;
     }
+    .cta {
+      text-align: center;
+      padding: 4rem 1.25rem;
+    }
+    .cta h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }
+    .cta p { color: #64748b; margin-bottom: 1.5rem; }
     footer {
       text-align: center;
       padding: 2rem 1.25rem;
       font-size: 0.8125rem;
-      color: #64748b;
-      border-top: 1px solid #e2e8f0;
+      color: #94a3b8;
       background: white;
+    }
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+      .nav-menu {
+        display: none;
+        position: absolute;
+        top: 4rem;
+        left: 0;
+        right: 0;
+        background: white;
+        border-bottom: 1px solid #e2e8f0;
+        flex-direction: column;
+        padding: 0.75rem;
+      }
+      .nav-menu.open { display: flex; }
+      .nav-menu a { width: 100%; padding: 0.75rem 1rem; }
+      .nav-actions .btn-secondary { display: none; }
     }
   </style>
 </head>
 <body>
   <header class="navbar">
     <a href="index.html" class="logo">Client<span>Flow</span></a>
-    <div class="nav-links">
+    <nav class="nav-menu" id="nav-menu">
       <a href="#fonctionnalites">Fonctionnalités</a>
       <a href="#tarifs">Tarifs</a>
-      <a href="login.html">Connexion</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <a href="login.html" class="btn btn-secondary">Connexion</a>
       <a href="register.html" class="btn btn-primary">Créer un compte</a>
+      <button class="menu-toggle" id="menu-toggle">☰</button>
     </div>
   </header>
 
   <section class="hero">
     <p class="badge">GESTION CLIENTS • PROJETS • ACTIVITÉ</p>
     <h1>Gérez votre activité<br><span>simplement.</span></h1>
-    <p>
-      ClientFlow vous permet de centraliser vos clients, vos projets
-      et votre activité depuis un seul espace.
-    </p>
+    <p>ClientFlow centralise vos clients, vos projets et vos finances dans un seul espace.</p>
     <div class="hero-buttons">
-      <a href="register.html" class="btn btn-primary" style="padding:0.75rem 1.25rem">
-        S'inscrire pour gérer mon activité
-      </a>
-      <a href="login.html" class="btn btn-secondary" style="padding:0.75rem 1.25rem">
-        Se connecter
-      </a>
+      <a href="register.html" class="btn btn-primary">S'inscrire pour gérer mon activité</a>
+      <a href="login.html" class="btn btn-secondary">Se connecter</a>
     </div>
   </section>
 
@@ -225,7 +247,7 @@
       <div class="feature-card">
         <div class="icon">📁</div>
         <h3>Projets</h3>
-        <p>Suivez vos projets, montants, avances et restes à payer.</p>
+        <p>Suivez titres, montants, avances et restes à payer.</p>
       </div>
       <div class="feature-card">
         <div class="icon">📊</div>
@@ -240,29 +262,39 @@
     </div>
   </section>
 
-  <section id="tarifs" class="pricing section">
-    <div class="section-header">
-      <p class="small">Tarifs</p>
-      <h2>Commencez gratuitement</h2>
-      <p>Une formule simple pour découvrir ClientFlow.</p>
-    </div>
-    <div class="pricing-card">
-      <h3>Free</h3>
-      <p class="price">0 <span>FCFA / mois</span></p>
-      <ul>
-        <li>Jusqu'à 10 clients</li>
-        <li>Jusqu'à 3 projets</li>
-        <li>Tableau de bord</li>
-        <li>Gestion de base</li>
-      </ul>
-      <a href="register.html" class="btn btn-primary" style="width:100%">
-        Créer mon compte
-      </a>
+  <section id="tarifs" class="pricing-bg">
+    <div class="section">
+      <div class="section-header">
+        <p class="small">Tarifs</p>
+        <h2>Commencez gratuitement</h2>
+        <p>Une formule simple pour découvrir ClientFlow.</p>
+      </div>
+      <div class="pricing-card">
+        <h3>Free</h3>
+        <p class="price">0 <span>FCFA / mois</span></p>
+        <ul>
+          <li>Jusqu'à 10 clients</li>
+          <li>Jusqu'à 3 projets</li>
+          <li>Tableau de bord</li>
+          <li>Gestion de base</li>
+        </ul>
+        <a href="register.html" class="btn btn-primary" style="width:100%">Créer mon compte</a>
+      </div>
     </div>
   </section>
 
-  <footer>
-    © 2026 ClientFlow — Nexora Group. Tous droits réservés.
-  </footer>
+  <section id="contact" class="cta">
+    <h2>Prêt à organiser votre activité ?</h2>
+    <p>Créez votre compte gratuitement et commencez en quelques minutes.</p>
+    <a href="register.html" class="btn btn-primary" style="padding:0.8rem 1.5rem">S'inscrire maintenant</a>
+  </section>
+
+  <footer>© 2026 ClientFlow — Nexora Group. Tous droits réservés.</footer>
+
+  <script>
+    document.getElementById("menu-toggle").addEventListener("click", function () {
+      document.getElementById("nav-menu").classList.toggle("open");
+    });
+  </script>
 </body>
 </html>
