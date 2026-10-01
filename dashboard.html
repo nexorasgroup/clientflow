@@ -26,10 +26,7 @@
       top: 0;
       z-index: 10;
     }
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
+    .logo { font-size: 1.25rem; font-weight: 700; }
     .logo span { color: #4f46e5; }
     .nav-right {
       display: flex;
@@ -58,16 +55,12 @@
       background: #4f46e5;
       color: white;
     }
-    .btn-primary:hover { background: #4338ca; }
     main {
       max-width: 56rem;
       margin: 0 auto;
       padding: 1.5rem 1.25rem 3rem;
     }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.25rem;
-    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
     .subtitle {
       color: #64748b;
       font-size: 0.875rem;
@@ -123,6 +116,14 @@
       padding: 3rem;
       color: #64748b;
     }
+    .error-box {
+      background: #fef2f2;
+      color: #dc2626;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      margin: 1.5rem 0;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -136,6 +137,7 @@
 
   <main>
     <div id="loading" class="loading">Chargement...</div>
+    <div id="error-box" class="error-box"></div>
 
     <div id="content" style="display:none">
       <h1 id="welcome">Bonjour 👋</h1>
@@ -161,8 +163,8 @@
       </div>
 
       <div class="actions">
-        <button class="btn btn-primary" onclick="alert('Bientôt disponible : gestion des clients')">+ Ajouter un client</button>
-        <button class="btn btn-secondary" onclick="alert('Bientôt disponible : gestion des projets')">+ Nouveau projet</button>
+        <button class="btn btn-primary" id="btn-add-client">+ Ajouter un client</button>
+        <button class="btn btn-secondary" id="btn-add-project">+ Nouveau projet</button>
       </div>
 
       <div class="empty" id="empty-state">
@@ -174,32 +176,52 @@
   </main>
 
   <script>
-    (async function init() {
-      // Vérifier la session
-      const { data: { session }, error } = await supabase.auth.getSession();
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-      if (!session) {
-        window.location.href = "login.html";
-        return;
+    async function init() {
+      try {
+        const { data: { session }, error } = await supabaseClient.auth.getSession();
+
+        if (error || !session) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        const user = session.user;
+        const fullName = user.user_metadata?.full_name || user.email || "Utilisateur";
+        const firstName = fullName.split(" ")[0];
+
+        document.getElementById("user-name").textContent = fullName;
+        document.getElementById("welcome").textContent = "Bonjour, " + firstName + " 👋";
+
+        // Afficher le contenu
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("content").style.display = "block";
+
+        // Boutons (prochaine étape)
+        document.getElementById("btn-add-client").addEventListener("click", function () {
+          alert("La gestion des clients arrive à la prochaine étape.");
+        });
+        document.getElementById("btn-add-project").addEventListener("click", function () {
+          alert("La gestion des projets arrive à la prochaine étape.");
+        });
+
+        // Déconnexion
+        document.getElementById("logout-btn").addEventListener("click", async function () {
+          await supabaseClient.auth.signOut();
+          window.location.href = "login.html";
+        });
+
+      } catch (err) {
+        document.getElementById("loading").style.display = "none";
+        const errorBox = document.getElementById("error-box");
+        errorBox.style.display = "block";
+        errorBox.textContent = "Erreur : " + (err.message || "Impossible de charger le tableau de bord");
+        console.error(err);
       }
+    }
 
-      const user = session.user;
-      const fullName = user.user_metadata?.full_name || user.email;
-      const firstName = fullName.split(" ")[0];
-
-      document.getElementById("user-name").textContent = fullName;
-      document.getElementById("welcome").textContent = `Bonjour, ${firstName} 👋`;
-
-      // Afficher le contenu
-      document.getElementById("loading").style.display = "none";
-      document.getElementById("content").style.display = "block";
-
-      // Déconnexion
-      document.getElementById("logout-btn").addEventListener("click", async () => {
-        await supabase.auth.signOut();
-        window.location.href = "login.html";
-      });
-    })();
+    init();
   </script>
 </body>
 </html>
