@@ -18,10 +18,7 @@
       padding: 1.5rem;
       color: #0f172a;
     }
-    .box {
-      width: 100%;
-      max-width: 26rem;
-    }
+    .box { width: 100%; max-width: 26rem; }
     .logo {
       text-align: center;
       font-size: 1.5rem;
@@ -36,10 +33,7 @@
       padding: 1.5rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.25rem;
-    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
     .subtitle {
       font-size: 0.875rem;
       color: #64748b;
@@ -66,6 +60,15 @@
       border-color: #4f46e5;
       box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
     }
+    .show-password {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.875rem;
+      color: #64748b;
+    }
+    .show-password input { width: auto; margin: 0; }
     button {
       width: 100%;
       padding: 0.75rem;
@@ -79,10 +82,7 @@
       font-family: inherit;
     }
     button:hover { background: #4338ca; }
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
     .error {
       background: #fef2f2;
       color: #dc2626;
@@ -131,6 +131,11 @@
         <label for="password">Mot de passe</label>
         <input type="password" id="password" placeholder="Votre mot de passe" required />
 
+        <label class="show-password">
+          <input type="checkbox" id="show-password" />
+          Afficher le mot de passe
+        </label>
+
         <button type="submit" id="btn">Se connecter</button>
       </form>
 
@@ -146,11 +151,22 @@
   </div>
 
   <script>
-    // Vérifier si déjà connecté
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Afficher / masquer le mot de passe
+    document.getElementById("show-password").addEventListener("change", function () {
+      document.getElementById("password").type = this.checked ? "text" : "password";
+    });
+
+    // Si déjà connecté → dashboard
     (async function checkSession() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        window.location.href = "dashboard.html";
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+          window.location.href = "dashboard.html";
+        }
+      } catch (e) {
+        console.log(e);
       }
     })();
 
@@ -166,21 +182,30 @@
       btn.disabled = true;
       btn.textContent = "Connexion...";
 
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
 
-      if (error) {
-        errorEl.textContent = "Email ou mot de passe incorrect.";
+        if (error) {
+          errorEl.textContent = error.message || "Email ou mot de passe incorrect.";
+          errorEl.style.display = "block";
+          btn.disabled = false;
+          btn.textContent = "Se connecter";
+          return;
+        }
+
+        // Connexion réussie
+        window.location.href = "dashboard.html";
+
+      } catch (err) {
+        errorEl.textContent = "Erreur : " + (err.message || "Impossible de contacter Supabase");
         errorEl.style.display = "block";
         btn.disabled = false;
         btn.textContent = "Se connecter";
-        return;
+        console.error(err);
       }
-
-      // Connexion réussie → dashboard
-      window.location.href = "dashboard.html";
     });
   </script>
 </body>
