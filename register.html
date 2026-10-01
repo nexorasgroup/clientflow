@@ -70,10 +70,7 @@
       font-size: 0.875rem;
       color: #64748b;
     }
-    .show-password input {
-      width: auto;
-      margin: 0;
-    }
+    .show-password input { width: auto; margin: 0; }
     button {
       width: 100%;
       padding: 0.75rem;
@@ -172,6 +169,9 @@
   </div>
 
   <script>
+    // Création du client Supabase
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     // Afficher / masquer les mots de passe
     document.getElementById("show-password").addEventListener("change", function () {
       const type = this.checked ? "text" : "password";
@@ -182,12 +182,12 @@
     // Si déjà connecté → dashboard
     (async function checkSession() {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
           window.location.href = "dashboard.html";
         }
       } catch (e) {
-        console.log("Session check error:", e);
+        console.log("Session check:", e);
       }
     })();
 
@@ -222,28 +222,24 @@
       btn.textContent = "Création en cours...";
 
       try {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: email,
+          password: password,
           options: {
-            data: {
-              full_name: fullName
-            }
+            data: { full_name: fullName }
           }
         });
 
         if (error) {
-          errorEl.textContent = error.message || "Une erreur est survenue.";
+          errorEl.textContent = error.message;
           errorEl.style.display = "block";
           btn.disabled = false;
           btn.textContent = "Créer mon compte";
-          console.error("Supabase error:", error);
           return;
         }
 
         // Succès
         if (data.user && !data.session) {
-          // Email de confirmation probablement requis
           successEl.textContent = "Compte créé ! Vérifiez votre email pour confirmer, puis connectez-vous.";
           successEl.style.display = "block";
           btn.disabled = false;
@@ -253,15 +249,15 @@
           successEl.style.display = "block";
           setTimeout(() => {
             window.location.href = "dashboard.html";
-          }, 1200);
+          }, 1000);
         }
 
       } catch (err) {
-        errorEl.textContent = "Erreur de connexion à Supabase. Vérifiez votre clé API.";
+        errorEl.textContent = "Erreur : " + (err.message || "Impossible de contacter Supabase");
         errorEl.style.display = "block";
         btn.disabled = false;
         btn.textContent = "Créer mon compte";
-        console.error("Catch error:", err);
+        console.error(err);
       }
     });
   </script>
