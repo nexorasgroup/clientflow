@@ -278,14 +278,12 @@
             ifu: ifu || null
           });
         }
+successEl.textContent = "Compte créé avec succès ! Vous pouvez maintenant vous connecter.";
+successEl.style.display = "block";
 
-        successEl.textContent = "Compte créé avec succès ! Redirection...";
-        successEl.style.display = "block";
-
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 1000);
-
+setTimeout(() => {
+  window.location.href = "index.html";
+}, 1500);
       } catch (err) {
         errorEl.textContent = "Erreur : " + (err.message || "Impossible de contacter Supabase");
         errorEl.style.display = "block";
