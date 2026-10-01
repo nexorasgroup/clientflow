@@ -26,8 +26,24 @@
       top: 0;
       z-index: 10;
     }
-    .logo { font-size: 1.25rem; font-weight: 700; text-decoration: none; color: inherit; }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: inherit;
+    }
     .logo span { color: #4f46e5; }
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      font-size: 0.8125rem;
+      color: #64748b;
+      text-decoration: none;
+    }
     .btn {
       padding: 0.5rem 0.875rem;
       border-radius: 0.5rem;
@@ -38,8 +54,16 @@
       font-family: inherit;
     }
     .btn-primary { background: #4f46e5; color: white; }
-    .btn-secondary { background: white; border: 1px solid #e2e8f0; color: #334155; }
-    .btn-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .btn-secondary {
+      background: white;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    .btn-danger {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
     .btn-sm { padding: 0.35rem 0.65rem; font-size: 0.75rem; }
     main {
       max-width: 56rem;
@@ -149,23 +173,16 @@
       margin-bottom: 1rem;
       display: none;
     }
-    .nav-links {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    .nav-links a {
-      font-size: 0.8125rem;
-      color: #64748b;
-      text-decoration: none;
-    }
   </style>
 </head>
 <body>
   <header class="navbar">
     <a href="dashboard.html" class="logo">Client<span>Flow</span></a>
     <div class="nav-links">
+      <a href="index.html">Accueil</a>
       <a href="dashboard.html">Tableau de bord</a>
+      <a href="clients.html">Clients</a>
+      <a href="projects.html">Projets</a>
       <button class="btn btn-secondary btn-sm" id="logout-btn">Déconnexion</button>
     </div>
   </header>
@@ -180,7 +197,7 @@
 
     <div class="card">
       <div id="loading" style="padding:2rem;text-align:center;color:#64748b">Chargement...</div>
-      <div id="table-wrap" style="display:none; overflow-x:auto">
+      <div id="table-wrap" style="display:none;overflow-x:auto">
         <table>
           <thead>
             <tr>
@@ -203,7 +220,6 @@
     </div>
   </main>
 
-  <!-- Modal -->
   <div class="modal-overlay" id="modal">
     <div class="modal">
       <h2 id="modal-title">Ajouter un client</h2>
@@ -228,7 +244,7 @@
         <textarea id="client-notes" rows="3"></textarea>
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" id="btn-cancel">Annuler</button>
-          <button type="submit" class="btn btn-primary" id="btn-save">Enregistrer</button>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
         </div>
       </form>
     </div>
@@ -243,6 +259,15 @@
       if (s === "prospect") return "Prospect";
       if (s === "inactive") return "Inactif";
       return s;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
     }
 
     function openModal(client = null) {
@@ -321,15 +346,6 @@
       loadClients();
     }
 
-    function escapeHtml(str) {
-      if (!str) return "";
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
     document.getElementById("btn-add").addEventListener("click", () => openModal());
     document.getElementById("btn-add-empty").addEventListener("click", () => openModal());
     document.getElementById("btn-cancel").addEventListener("click", closeModal);
@@ -353,7 +369,6 @@
       const errEl = document.getElementById("modal-error");
       errEl.style.display = "none";
 
-      // Limite Free : 10 clients
       if (!id) {
         const { count } = await supabaseClient
           .from("clients")
