@@ -43,12 +43,10 @@
       display: block;
       font-size: 0.875rem;
       font-weight: 500;
-      margin-bottom: 0.375rem;
+      margin-bottom: 0.35rem;
       color: #334155;
     }
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
+    input, select {
       width: 100%;
       padding: 0.7rem 0.75rem;
       border: 1px solid #e2e8f0;
@@ -57,7 +55,7 @@
       margin-bottom: 1rem;
       font-family: inherit;
     }
-    input:focus {
+    input:focus, select:focus {
       outline: none;
       border-color: #4f46e5;
       box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
@@ -123,6 +121,11 @@
       color: #64748b;
       text-decoration: none;
     }
+    .optional {
+      font-weight: 400;
+      color: #94a3b8;
+      font-size: 0.75rem;
+    }
   </style>
 </head>
 <body>
@@ -137,16 +140,31 @@
       <div id="success" class="success"></div>
 
       <form id="register-form">
-        <label for="fullname">Nom complet</label>
-        <input type="text" id="fullname" placeholder="Votre nom" required />
+        <label for="last-name">Nom *</label>
+        <input type="text" id="last-name" placeholder="Votre nom" required />
 
-        <label for="email">Adresse email</label>
+        <label for="first-name">Prénoms *</label>
+        <input type="text" id="first-name" placeholder="Vos prénoms" required />
+
+        <label for="phone">Contact (téléphone) *</label>
+        <input type="tel" id="phone" placeholder="Ex: 97 00 00 00" required />
+
+        <label for="activity">Activité *</label>
+        <input type="text" id="activity" placeholder="Ex: Freelance, Commerce, Prestations..." required />
+
+        <label for="location">Situation géographique <span class="optional">(optionnel)</span></label>
+        <input type="text" id="location" placeholder="Ville, quartier..." />
+
+        <label for="email">Adresse email *</label>
         <input type="email" id="email" placeholder="vous@exemple.com" required />
 
-        <label for="password">Mot de passe</label>
+        <label for="ifu">Numéro IFU <span class="optional">(optionnel)</span></label>
+        <input type="text" id="ifu" placeholder="Numéro IFU" />
+
+        <label for="password">Mot de passe *</label>
         <input type="password" id="password" placeholder="Minimum 6 caractères" required minlength="6" />
 
-        <label for="confirm">Confirmer le mot de passe</label>
+        <label for="confirm">Confirmer le mot de passe *</label>
         <input type="password" id="confirm" placeholder="Répétez votre mot de passe" required />
 
         <label class="show-password">
@@ -169,33 +187,31 @@
   </div>
 
   <script>
-    // Création du client Supabase
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Afficher / masquer les mots de passe
     document.getElementById("show-password").addEventListener("change", function () {
       const type = this.checked ? "text" : "password";
       document.getElementById("password").type = type;
       document.getElementById("confirm").type = type;
     });
 
-    // Si déjà connecté → dashboard
     (async function checkSession() {
       try {
         const { data: { session } } = await supabaseClient.auth.getSession();
-        if (session) {
-          window.location.href = "dashboard.html";
-        }
-      } catch (e) {
-        console.log("Session check:", e);
-      }
+        if (session) window.location.href = "dashboard.html";
+      } catch (e) {}
     })();
 
     document.getElementById("register-form").addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      const fullName = document.getElementById("fullname").value.trim();
+      const lastName = document.getElementById("last-name").value.trim();
+      const firstName = document.getElementById("first-name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const activity = document.getElementById("activity").value.trim();
+      const location = document.getElementById("location").value.trim();
       const email = document.getElementById("email").value.trim();
+      const ifu = document.getElementById("ifu").value.trim();
       const password = document.getElementById("password").value;
       const confirm = document.getElementById("confirm").value;
 
@@ -221,12 +237,22 @@
       btn.disabled = true;
       btn.textContent = "Création en cours...";
 
+      const fullName = firstName + " " + lastName;
+
       try {
         const { data, error } = await supabaseClient.auth.signUp({
-          email: email,
-          password: password,
+          email,
+          password,
           options: {
-            data: { full_name: fullName }
+            data: {
+              full_name: fullName,
+              first_name: firstName,
+              last_name: lastName,
+              phone: phone,
+              activity: activity,
+              location: location || null,
+              ifu: ifu || null
+            }
           }
         });
 
@@ -238,26 +264,33 @@
           return;
         }
 
-        // Succès
-        if (data.user && !data.session) {
-          successEl.textContent = "Compte créé ! Vérifiez votre email pour confirmer, puis connectez-vous.";
-          successEl.style.display = "block";
-          btn.disabled = false;
-          btn.textContent = "Créer mon compte";
-        } else {
-          successEl.textContent = "Compte créé avec succès ! Redirection...";
-          successEl.style.display = "block";
-          setTimeout(() => {
-            window.location.href = "dashboard.html";
-          }, 1000);
+        // Mettre à jour le profil avec les infos complètes
+        if (data.user) {
+          await supabaseClient.from("profiles").upsert({
+            id: data.user.id,
+            email: email,
+            full_name: fullName,
+            first_name: firstName,
+            last_name: lastName,
+            phone: phone,
+            activity: activity,
+            location: location || null,
+            ifu: ifu || null
+          });
         }
+
+        successEl.textContent = "Compte créé avec succès ! Redirection...";
+        successEl.style.display = "block";
+
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 1000);
 
       } catch (err) {
         errorEl.textContent = "Erreur : " + (err.message || "Impossible de contacter Supabase");
         errorEl.style.display = "block";
         btn.disabled = false;
         btn.textContent = "Créer mon compte";
-        console.error(err);
       }
     });
   </script>
