@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projets — ClientFlow</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      min-height: 100vh;
+    }
+    .navbar {
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 0 1.25rem;
+      height: 3.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: inherit;
+    }
+    .logo span { color: #4f46e5; }
+    .nav-links {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .nav-links a {
+      font-size: 0.8125rem;
+      color: #64748b;
+      text-decoration: none;
+    }
+    .btn {
+      padding: 0.5rem 0.875rem;
+      border-radius: 0.5rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-primary { background: #4f46e5; color: white; }
+    .btn-secondary {
+      background: white;
+      border: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    .btn-danger {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    .btn-sm { padding: 0.35rem 0.65rem; font-size: 0.75rem; }
+    main {
+      max-width: 56rem;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 3rem;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    h1 { font-size: 1.5rem; }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.75rem;
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    th {
+      background: #f8fafc;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .empty {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: #64748b;
+    }
+    .empty .icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .badge-pending { background: #fef3c7; color: #b45309; }
+    .badge-in_progress { background: #dbeafe; color: #1d4ed8; }
+    .badge-completed { background: #d1fae5; color: #047857; }
+    .badge-cancelled { background: #fee2e2; color: #b91c1c; }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 0.75rem;
+      width: 100%;
+      max-width: 26rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+    .modal h2 { font-size: 1.25rem; margin-bottom: 1.25rem; }
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.35rem;
+      color: #334155;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 0.5rem;
+      font-size: 0.9375rem;
+      margin-bottom: 1rem;
+      font-family: inherit;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    }
+    .modal-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+      margin-top: 0.5rem;
+    }
+    .error {
+      background: #fef2f2;
+      color: #dc2626;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <a href="dashboard.html" class="logo">Client<span>Flow</span></a>
+    <div class="nav-links">
+      <a href="dashboard.html">Tableau de bord</a>
+      <a href="clients.html">Clients</a>
+      <button class="btn btn-secondary btn-sm" id="logout-btn">Déconnexion</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-header">
+      <h1>Projets</h1>
+      <button class="btn btn-primary" id="btn-add">+ Nouveau projet</button>
+    </div>
+
+    <div id="error" class="error"></div>
+
+    <div class="card">
+      <div id="loading" style="padding:2rem;text-align:center;color:#64748b">Chargement...</div>
+      <div id="table-wrap" style="display:none;overflow-x:auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Titre</th>
+              <th>Client</th>
+              <th>Montant</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="projects-tbody"></tbody>
+        </table>
+      </div>
+      <div id="empty" class="empty" style="display:none">
+        <div class="icon">📁</div>
+        <h3>Aucun projet</h3>
+        <p>Créez votre premier projet.</p>
+        <button class="btn btn-primary" id="btn-add-empty" style="margin-top:1rem">+ Nouveau projet</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h2 id="modal-title">Nouveau projet</h2>
+      <div id="modal-error" class="error"></div>
+      <form id="project-form">
+        <input type="hidden" id="project-id" />
+        <label>Titre *</label>
+        <input type="text" id="project-title" required />
+        <label>Client</label>
+        <select id="project-client">
+          <option value="">— Aucun —</option>
+        </select>
+        <label>Description</label>
+        <textarea id="project-description" rows="2"></textarea>
+        <label>Montant (FCFA)</label>
+        <input type="number" id="project-amount" min="0" step="100" value="0" />
+        <label>Statut</label>
+        <select id="project-status">
+          <option value="pending">En attente</option>
+          <option value="in_progress">En cours</option>
+          <option value="completed">Terminé</option>
+          <option value="cancelled">Annulé</option>
+        </select>
+        <label>Date d'échéance</label>
+        <input type="date" id="project-due" />
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="btn-cancel">Annuler</button>
+          <button type="submit" class="btn btn-primary" id="btn-save">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let currentUser = null;
+    let clientsList = [];
+
+    function statusLabel(s) {
+      const map = {
+        pending: "En attente",
+        in_progress: "En cours",
+        completed: "Terminé",
+        cancelled: "Annulé"
+      };
+      return map[s] || s;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    async function loadClientsForSelect() {
+      const { data } = await supabaseClient
+        .from("clients")
+        .select("id, name")
+        .eq("user_id", currentUser.id)
+        .order("name");
+      clientsList = data || [];
+      const select = document.getElementById("project-client");
+      select.innerHTML = '<option value="">— Aucun —</option>' +
+        clientsList.map(c => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+    }
+
+    function openModal(project = null) {
+      document.getElementById("modal-error").style.display = "none";
+      document.getElementById("project-id").value = project ? project.id : "";
+      document.getElementById("modal-title").textContent = project ? "Modifier le projet" : "Nouveau projet";
+      document.getElementById("project-title").value = project ? project.title : "";
+      document.getElementById("project-client").value = project ? (project.client_id || "") : "";
+      document.getElementById("project-description").value = project ? (project.description || "") : "";
+      document.getElementById("project-amount").value = project ? (project.amount || 0) : 0;
+      document.getElementById("project-status").value = project ? (project.status || "pending") : "pending";
+      document.getElementById("project-due").value = project && project.due_date ? project.due_date : "";
+      document.getElementById("modal").classList.add("open");
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.remove("open");
+    }
+
+    async function loadProjects() {
+      const { data, error } = await supabaseClient
+        .from("projects")
+        .select("*, clients(name)")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+
+      document.getElementById("loading").style.display = "none";
+
+      if (error) {
+        document.getElementById("error").textContent = error.message;
+        document.getElementById("error").style.display = "block";
+        return;
+      }
+
+      const tbody = document.getElementById("projects-tbody");
+      const empty = document.getElementById("empty");
+      const tableWrap = document.getElementById("table-wrap");
+
+      if (!data || data.length === 0) {
+        tableWrap.style.display = "none";
+        empty.style.display = "block";
+        return;
+      }
+
+      empty.style.display = "none";
+      tableWrap.style.display = "block";
+
+      tbody.innerHTML = data.map(p => {
+        const clientName = p.clients ? p.clients.name : "—";
+        return `
+          <tr>
+            <td><strong>${escapeHtml(p.title)}</strong></td>
+            <td>${escapeHtml(clientName)}</td>
+            <td>${Number(p.amount || 0).toLocaleString("fr-FR")} FCFA</td>
+            <td><span class="badge badge-${p.status}">${statusLabel(p.status)}</span></td>
+            <td>
+              <button class="btn btn-secondary btn-sm" onclick='editProject(${JSON.stringify(p).replace(/'/g, "&#39;")})'>Modifier</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteProject('${p.id}')">Suppr.</button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function editProject(project) {
+      openModal(project);
+    }
+
+    async function deleteProject(id) {
+      if (!confirm("Supprimer ce projet ?")) return;
+      const { error } = await supabaseClient.from("projects").delete().eq("id", id);
+      if (error) {
+        alert(error.message);
+        return;
+      }
+      loadProjects();
+    }
+
+    document.getElementById("btn-add").addEventListener("click", () => openModal());
+    document.getElementById("btn-add-empty").addEventListener("click", () => openModal());
+    document.getElementById("btn-cancel").addEventListener("click", closeModal);
+    document.getElementById("modal").addEventListener("click", (e) => {
+      if (e.target.id === "modal") closeModal();
+    });
+
+    document.getElementById("project-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const id = document.getElementById("project-id").value;
+      const payload = {
+        title: document.getElementById("project-title").value.trim(),
+        client_id: document.getElementById("project-client").value || null,
+        description: document.getElementById("project-description").value.trim() || null,
+        amount: Number(document.getElementById("project-amount").value) || 0,
+        status: document.getElementById("project-status").value,
+        due_date: document.getElementById("project-due").value || null,
+        user_id: currentUser.id
+      };
+
+      const errEl = document.getElementById("modal-error");
+      errEl.style.display = "none";
+
+      // Limite Free : 3 projets
+      if (!id) {
+        const { count } = await supabaseClient
+          .from("projects")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", currentUser.id);
+        if (count >= 3) {
+          errEl.textContent = "Plan Free limité à 3 projets.";
+          errEl.style.display = "block";
+          return;
+        }
+      }
+
+      let error;
+      if (id) {
+        const res = await supabaseClient.from("projects").update(payload).eq("id", id);
+        error = res.error;
+      } else {
+        const res = await supabaseClient.from("projects").insert(payload);
+        error = res.error;
+      }
+
+      if (error) {
+        errEl.textContent = error.message;
+        errEl.style.display = "block";
+        return;
+      }
+
+      closeModal();
+      loadProjects();
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      await supabaseClient.auth.signOut();
+      window.location.href = "login.html";
+    });
+
+    (async function init() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = "login.html";
+        return;
+      }
+      currentUser = session.user;
+      await loadClientsForSelect();
+      loadProjects();
+    })();
+  </script>
+</body>
+</html>
