@@ -36,12 +36,10 @@
     .nav-right {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
-    .user-name {
-      font-size: 0.875rem;
-      color: #64748b;
-    }
+    .user-name { font-size: 0.875rem; color: #64748b; }
     .btn {
       padding: 0.5rem 0.875rem;
       border-radius: 0.5rem;
@@ -59,19 +57,13 @@
       border: 1px solid #e2e8f0;
       color: #334155;
     }
-    .btn-primary {
-      background: #4f46e5;
-      color: white;
-    }
+    .btn-primary { background: #4f46e5; color: white; }
     main {
       max-width: 56rem;
       margin: 0 auto;
       padding: 1.5rem 1.25rem 3rem;
     }
-    h1 {
-      font-size: 1.5rem;
-      margin-bottom: 0.25rem;
-    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
     .subtitle {
       color: #64748b;
       font-size: 0.875rem;
@@ -98,10 +90,7 @@
       font-weight: 500;
       margin-bottom: 0.25rem;
     }
-    .stat-card p {
-      font-size: 1.5rem;
-      font-weight: 700;
-    }
+    .stat-card p { font-size: 1.5rem; font-weight: 700; }
     .actions {
       display: flex;
       flex-wrap: wrap;
@@ -115,10 +104,7 @@
       padding: 2.5rem 1.25rem;
       text-align: center;
     }
-    .empty .icon {
-      font-size: 2.25rem;
-      margin-bottom: 0.75rem;
-    }
+    .empty .icon { font-size: 2.25rem; margin-bottom: 0.75rem; }
     .empty h3 { margin-bottom: 0.5rem; }
     .empty p {
       color: #64748b;
@@ -136,6 +122,9 @@
   <header class="navbar">
     <a href="dashboard.html" class="logo">Client<span>Flow</span></a>
     <div class="nav-right">
+      <a href="index.html" class="btn btn-secondary">Accueil</a>
+      <a href="clients.html" class="btn btn-secondary">Clients</a>
+      <a href="projects.html" class="btn btn-secondary">Projets</a>
       <span class="user-name" id="user-name">...</span>
       <button class="btn btn-secondary" id="logout-btn">Déconnexion</button>
     </div>
@@ -143,28 +132,15 @@
 
   <main>
     <div id="loading" class="loading">Chargement...</div>
-
     <div id="content" style="display:none">
       <h1 id="welcome">Bonjour 👋</h1>
       <p class="subtitle">Voici un aperçu de votre activité.</p>
 
       <div class="stats">
-        <div class="stat-card">
-          <h3>Clients</h3>
-          <p id="stat-clients">0</p>
-        </div>
-        <div class="stat-card">
-          <h3>Projets</h3>
-          <p id="stat-projects">0</p>
-        </div>
-        <div class="stat-card">
-          <h3>En cours</h3>
-          <p id="stat-active">0</p>
-        </div>
-        <div class="stat-card">
-          <h3>Revenus</h3>
-          <p id="stat-revenue">0</p>
-        </div>
+        <div class="stat-card"><h3>Clients</h3><p id="stat-clients">0</p></div>
+        <div class="stat-card"><h3>Projets</h3><p id="stat-projects">0</p></div>
+        <div class="stat-card"><h3>En cours</h3><p id="stat-active">0</p></div>
+        <div class="stat-card"><h3>Revenus</h3><p id="stat-revenue">0</p></div>
       </div>
 
       <div class="actions">
@@ -200,13 +176,11 @@
         document.getElementById("user-name").textContent = fullName;
         document.getElementById("welcome").textContent = "Bonjour, " + firstName + " 👋";
 
-        // Stats clients
         const { count: clientsCount } = await supabaseClient
           .from("clients")
           .select("*", { count: "exact", head: true })
           .eq("user_id", user.id);
 
-        // Stats projets
         const { data: projects } = await supabaseClient
           .from("projects")
           .select("amount, status")
@@ -232,13 +206,11 @@
           await supabaseClient.auth.signOut();
           window.location.href = "login.html";
         });
-
       } catch (err) {
         console.error(err);
         window.location.href = "login.html";
       }
     }
-
     init();
   </script>
 </body>
