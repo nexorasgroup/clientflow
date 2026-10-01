@@ -37,6 +37,7 @@
       display: flex;
       gap: 0.5rem;
       align-items: center;
+      flex-wrap: wrap;
     }
     .nav-links a {
       font-size: 0.8125rem;
@@ -173,10 +174,7 @@
       margin-bottom: 1rem;
       display: none;
     }
-    .reste {
-      font-weight: 600;
-      color: #b45309;
-    }
+    .reste { font-weight: 600; color: #b45309; }
     .reste-ok { color: #047857; }
   </style>
 </head>
@@ -184,8 +182,10 @@
   <header class="navbar">
     <a href="dashboard.html" class="logo">Client<span>Flow</span></a>
     <div class="nav-links">
+      <a href="index.html">Accueil</a>
       <a href="dashboard.html">Tableau de bord</a>
       <a href="clients.html">Clients</a>
+      <a href="projects.html">Projets</a>
       <button class="btn btn-secondary btn-sm" id="logout-btn">Déconnexion</button>
     </div>
   </header>
