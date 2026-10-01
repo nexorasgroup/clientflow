@@ -26,7 +26,12 @@
       top: 0;
       z-index: 10;
     }
-    .logo { font-size: 1.25rem; font-weight: 700; }
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-decoration: none;
+      color: inherit;
+    }
     .logo span { color: #4f46e5; }
     .nav-right {
       display: flex;
@@ -45,6 +50,9 @@
       border: none;
       cursor: pointer;
       font-family: inherit;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
     }
     .btn-secondary {
       background: white;
@@ -60,7 +68,10 @@
       margin: 0 auto;
       padding: 1.5rem 1.25rem 3rem;
     }
-    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 0.25rem;
+    }
     .subtitle {
       color: #64748b;
       font-size: 0.875rem;
@@ -104,7 +115,10 @@
       padding: 2.5rem 1.25rem;
       text-align: center;
     }
-    .empty .icon { font-size: 2.25rem; margin-bottom: 0.75rem; }
+    .empty .icon {
+      font-size: 2.25rem;
+      margin-bottom: 0.75rem;
+    }
     .empty h3 { margin-bottom: 0.5rem; }
     .empty p {
       color: #64748b;
@@ -116,19 +130,11 @@
       padding: 3rem;
       color: #64748b;
     }
-    .error-box {
-      background: #fef2f2;
-      color: #dc2626;
-      padding: 1rem;
-      border-radius: 0.5rem;
-      margin: 1.5rem 0;
-      display: none;
-    }
   </style>
 </head>
 <body>
   <header class="navbar">
-    <div class="logo">Client<span>Flow</span></div>
+    <a href="dashboard.html" class="logo">Client<span>Flow</span></a>
     <div class="nav-right">
       <span class="user-name" id="user-name">...</span>
       <button class="btn btn-secondary" id="logout-btn">Déconnexion</button>
@@ -137,7 +143,6 @@
 
   <main>
     <div id="loading" class="loading">Chargement...</div>
-    <div id="error-box" class="error-box"></div>
 
     <div id="content" style="display:none">
       <h1 id="welcome">Bonjour 👋</h1>
@@ -163,14 +168,16 @@
       </div>
 
       <div class="actions">
-        <button class="btn btn-primary" id="btn-add-client">+ Ajouter un client</button>
-        <button class="btn btn-secondary" id="btn-add-project">+ Nouveau projet</button>
+        <a href="clients.html" class="btn btn-primary">+ Ajouter un client</a>
+        <a href="projects.html" class="btn btn-secondary">+ Nouveau projet</a>
+        <a href="clients.html" class="btn btn-secondary">Voir mes clients</a>
       </div>
 
-      <div class="empty" id="empty-state">
+      <div class="empty" id="empty-state" style="display:none">
         <div class="icon">🚀</div>
         <h3>Bienvenue sur ClientFlow !</h3>
-        <p>Votre compte est créé. La gestion des clients et projets arrive à la prochaine étape.</p>
+        <p>Commencez par ajouter votre premier client.</p>
+        <a href="clients.html" class="btn btn-primary">Ajouter mon premier client</a>
       </div>
     </div>
   </main>
@@ -180,9 +187,8 @@
 
     async function init() {
       try {
-        const { data: { session }, error } = await supabaseClient.auth.getSession();
-
-        if (error || !session) {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
           window.location.href = "login.html";
           return;
         }
@@ -194,30 +200,42 @@
         document.getElementById("user-name").textContent = fullName;
         document.getElementById("welcome").textContent = "Bonjour, " + firstName + " 👋";
 
-        // Afficher le contenu
+        // Stats clients
+        const { count: clientsCount } = await supabaseClient
+          .from("clients")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id);
+
+        // Stats projets
+        const { data: projects } = await supabaseClient
+          .from("projects")
+          .select("amount, status")
+          .eq("user_id", user.id);
+
+        const projectsCount = projects ? projects.length : 0;
+        const activeCount = projects ? projects.filter(p => p.status === "in_progress").length : 0;
+        const revenue = projects ? projects.reduce((sum, p) => sum + (Number(p.amount) || 0), 0) : 0;
+
+        document.getElementById("stat-clients").textContent = clientsCount || 0;
+        document.getElementById("stat-projects").textContent = projectsCount;
+        document.getElementById("stat-active").textContent = activeCount;
+        document.getElementById("stat-revenue").textContent = revenue.toLocaleString("fr-FR");
+
+        if (!clientsCount || clientsCount === 0) {
+          document.getElementById("empty-state").style.display = "block";
+        }
+
         document.getElementById("loading").style.display = "none";
         document.getElementById("content").style.display = "block";
 
-        // Boutons (prochaine étape)
-        document.getElementById("btn-add-client").addEventListener("click", function () {
-          alert("La gestion des clients arrive à la prochaine étape.");
-        });
-        document.getElementById("btn-add-project").addEventListener("click", function () {
-          alert("La gestion des projets arrive à la prochaine étape.");
-        });
-
-        // Déconnexion
-        document.getElementById("logout-btn").addEventListener("click", async function () {
+        document.getElementById("logout-btn").addEventListener("click", async () => {
           await supabaseClient.auth.signOut();
           window.location.href = "login.html";
         });
 
       } catch (err) {
-        document.getElementById("loading").style.display = "none";
-        const errorBox = document.getElementById("error-box");
-        errorBox.style.display = "block";
-        errorBox.textContent = "Erreur : " + (err.message || "Impossible de charger le tableau de bord");
         console.error(err);
+        window.location.href = "login.html";
       }
     }
 
