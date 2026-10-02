@@ -12,8 +12,8 @@
     .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
     .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
     .logo span{color:#4f46e5}
-    .nav-links{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap}
-    .nav-links a{font-size:.75rem;color:#64748b;text-decoration:none;padding:.2rem .3rem}
+    .nav-links{display:flex;gap:.25rem;align-items:center;flex-wrap:wrap}
+    .nav-links a{font-size:.7rem;color:#64748b;text-decoration:none;padding:.15rem .2rem}
     .btn{padding:.5rem .85rem;border-radius:.5rem;font-size:.8rem;font-weight:500;border:none;cursor:pointer;font-family:inherit}
     .btn-primary{background:#4f46e5;color:#fff}
     .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
@@ -42,153 +42,84 @@
       <a href="projects.html">Projets</a>
       <a href="finances.html">Finances</a>
       <a href="profile.html">Profil</a>
-      <button class="btn btn-secondary" id="logout-btn" style="font-size:.75rem;padding:.35rem .6rem">Déconnexion</button>
+      <a href="plan.html">Plan</a>
+      <button class="btn btn-secondary" id="logout-btn" style="font-size:.7rem;padding:.3rem .5rem">Déconnexion</button>
     </div>
   </header>
-
   <main>
     <div id="loading" class="loading">Chargement...</div>
-
     <div id="content" style="display:none">
       <h1>Mon profil</h1>
       <p class="subtitle">Vos informations personnelles et professionnelles.</p>
-
       <div id="msg-ok" class="msg msg-ok"></div>
       <div id="msg-err" class="msg msg-err"></div>
-
       <div class="card">
         <form id="profile-form">
           <label>Nom *</label>
           <input type="text" id="last-name" required/>
-
           <label>Prénoms *</label>
           <input type="text" id="first-name" required/>
-
           <label>Contact (téléphone) *</label>
           <input type="tel" id="phone" required/>
-
           <label>Activité *</label>
           <input type="text" id="activity" required/>
-
           <label>Situation géographique <span class="optional">(optionnel)</span></label>
           <input type="text" id="location"/>
-
           <label>Email</label>
           <input type="email" id="email" disabled/>
-
           <label>Numéro IFU <span class="optional">(optionnel)</span></label>
           <input type="text" id="ifu"/>
-
-          <button type="submit" class="btn btn-primary" id="btn-save" style="width:100%;margin-top:.5rem">
-            Enregistrer les modifications
-          </button>
+          <button type="submit" class="btn btn-primary" id="btn-save" style="width:100%;margin-top:.5rem">Enregistrer les modifications</button>
         </form>
       </div>
     </div>
   </main>
-
   <script>
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    let currentUser = null;
-
-    async function init() {
-      try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) {
-          window.location.href = "login.html";
-          return;
-        }
-        currentUser = session.user;
-
-        // Charger le profil
-        const { data: profile } = await supabaseClient
-          .from("profiles")
-          .select("*")
-          .eq("id", currentUser.id)
-          .single();
-
-        const meta = currentUser.user_metadata || {};
-
-        document.getElementById("last-name").value = (profile && profile.last_name) || meta.last_name || "";
-        document.getElementById("first-name").value = (profile && profile.first_name) || meta.first_name || "";
-        document.getElementById("phone").value = (profile && profile.phone) || meta.phone || "";
-        document.getElementById("activity").value = (profile && profile.activity) || meta.activity || "";
-        document.getElementById("location").value = (profile && profile.location) || meta.location || "";
-        document.getElementById("email").value = currentUser.email || "";
-        document.getElementById("ifu").value = (profile && profile.ifu) || meta.ifu || "";
-
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("content").style.display = "block";
-
-        document.getElementById("logout-btn").addEventListener("click", async function () {
-          await supabaseClient.auth.signOut();
-          window.location.href = "login.html";
-        });
-      } catch (err) {
-        console.error(err);
-        window.location.href = "login.html";
-      }
+    const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    let currentUser=null;
+    async function init(){
+      try{
+        const{data:{session}}=await supabaseClient.auth.getSession();
+        if(!session){window.location.href="login.html";return}
+        currentUser=session.user;
+        const{data:profile}=await supabaseClient.from("profiles").select("*").eq("id",currentUser.id).single();
+        const meta=currentUser.user_metadata||{};
+        document.getElementById("last-name").value=(profile&&profile.last_name)||meta.last_name||"";
+        document.getElementById("first-name").value=(profile&&profile.first_name)||meta.first_name||"";
+        document.getElementById("phone").value=(profile&&profile.phone)||meta.phone||"";
+        document.getElementById("activity").value=(profile&&profile.activity)||meta.activity||"";
+        document.getElementById("location").value=(profile&&profile.location)||meta.location||"";
+        document.getElementById("email").value=currentUser.email||"";
+        document.getElementById("ifu").value=(profile&&profile.ifu)||meta.ifu||"";
+        document.getElementById("loading").style.display="none";
+        document.getElementById("content").style.display="block";
+        document.getElementById("logout-btn").addEventListener("click",async function(){await supabaseClient.auth.signOut();window.location.href="login.html"})
+      }catch(err){window.location.href="login.html"}
     }
-
-    document.getElementById("profile-form").addEventListener("submit", async function (e) {
+    document.getElementById("profile-form").addEventListener("submit",async function(e){
       e.preventDefault();
-      var msgOk = document.getElementById("msg-ok");
-      var msgErr = document.getElementById("msg-err");
-      var btn = document.getElementById("btn-save");
-      msgOk.style.display = "none";
-      msgErr.style.display = "none";
-
-      var firstName = document.getElementById("first-name").value.trim();
-      var lastName = document.getElementById("last-name").value.trim();
-      var phone = document.getElementById("phone").value.trim();
-      var activity = document.getElementById("activity").value.trim();
-      var location = document.getElementById("location").value.trim();
-      var ifu = document.getElementById("ifu").value.trim();
-      var fullName = firstName + " " + lastName;
-
-      btn.disabled = true;
-      btn.textContent = "Enregistrement...";
-
-      try {
-        // Mettre à jour profiles
-        const { error } = await supabaseClient.from("profiles").upsert({
-          id: currentUser.id,
-          email: currentUser.email,
-          full_name: fullName,
-          first_name: firstName,
-          last_name: lastName,
-          phone: phone,
-          activity: activity,
-          location: location || null,
-          ifu: ifu || null
+      var msgOk=document.getElementById("msg-ok"),msgErr=document.getElementById("msg-err"),btn=document.getElementById("btn-save");
+      msgOk.style.display="none";msgErr.style.display="none";
+      var firstName=document.getElementById("first-name").value.trim();
+      var lastName=document.getElementById("last-name").value.trim();
+      var phone=document.getElementById("phone").value.trim();
+      var activity=document.getElementById("activity").value.trim();
+      var location=document.getElementById("location").value.trim();
+      var ifu=document.getElementById("ifu").value.trim();
+      var fullName=firstName+" "+lastName;
+      btn.disabled=true;btn.textContent="Enregistrement...";
+      try{
+        const{error}=await supabaseClient.from("profiles").upsert({
+          id:currentUser.id,email:currentUser.email,full_name:fullName,
+          first_name:firstName,last_name:lastName,phone:phone,activity:activity,
+          location:location||null,ifu:ifu||null
         });
-
-        if (error) throw error;
-
-        // Mettre à jour les metadata auth
-        await supabaseClient.auth.updateUser({
-          data: {
-            full_name: fullName,
-            first_name: firstName,
-            last_name: lastName,
-            phone: phone,
-            activity: activity,
-            location: location || null,
-            ifu: ifu || null
-          }
-        });
-
-        msgOk.textContent = "Profil mis à jour avec succès.";
-        msgOk.style.display = "block";
-      } catch (err) {
-        msgErr.textContent = err.message || "Erreur lors de l'enregistrement.";
-        msgErr.style.display = "block";
-      }
-
-      btn.disabled = false;
-      btn.textContent = "Enregistrer les modifications";
+        if(error)throw error;
+        await supabaseClient.auth.updateUser({data:{full_name:fullName,first_name:firstName,last_name:lastName,phone:phone,activity:activity,location:location||null,ifu:ifu||null}});
+        msgOk.textContent="Profil mis à jour avec succès.";msgOk.style.display="block"
+      }catch(err){msgErr.textContent=err.message||"Erreur lors de l'enregistrement.";msgErr.style.display="block"}
+      btn.disabled=false;btn.textContent="Enregistrer les modifications"
     });
-
     init();
   </script>
 </body>
