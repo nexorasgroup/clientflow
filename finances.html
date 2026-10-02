@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Finances — ClientFlow</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
@@ -12,9 +12,9 @@
     .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
     .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
     .logo span{color:#4f46e5}
-    .nav-links{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap}
-    .nav-links a{font-size:.75rem;color:#64748b;text-decoration:none;padding:.2rem .3rem}
-    .btn{padding:.45rem .75rem;border-radius:.5rem;font-size:.75rem;font-weight:500;border:none;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center}
+    .nav-links{display:flex;gap:.3rem;align-items:center;flex-wrap:wrap}
+    .nav-links a{font-size:.72rem;color:#64748b;text-decoration:none;padding:.15rem .25rem}
+    .btn{padding:.45rem .7rem;border-radius:.5rem;font-size:.75rem;font-weight:500;border:none;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center}
     .btn-primary{background:#4f46e5;color:#fff}
     .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
     main{max-width:56rem;margin:0 auto;padding:1.25rem 1rem 3rem}
@@ -24,7 +24,7 @@
     @media(min-width:480px){.stats{grid-template-columns:repeat(3,1fr)}}
     .stat-card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem}
     .stat-card h3{font-size:.75rem;color:#64748b;font-weight:500;margin-bottom:.35rem}
-    .stat-card p{font-size:1.2rem;font-weight:700}
+    .stat-card p{font-size:1.15rem;font-weight:700}
     .stat-card.blue p{color:#1d4ed8}
     .stat-card.green p{color:#047857}
     .stat-card.orange p{color:#b45309}
@@ -32,11 +32,11 @@
     .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden}
     .card-header{padding:.9rem 1rem;border-bottom:1px solid #e2e8f0;font-weight:600;font-size:.9rem}
     table{width:100%;border-collapse:collapse;font-size:.8rem}
-    th,td{text-align:left;padding:.7rem .6rem;border-bottom:1px solid #e2e8f0}
+    th,td{text-align:left;padding:.65rem .55rem;border-bottom:1px solid #e2e8f0}
     th{background:#f8fafc;color:#64748b;font-weight:500}
     .empty{text-align:center;padding:2.5rem 1rem;color:#64748b}
     .empty .icon{font-size:2rem;margin-bottom:.75rem}
-    .badge{display:inline-block;padding:.15rem .45rem;border-radius:9999px;font-size:.7rem;font-weight:500}
+    .badge{display:inline-block;padding:.15rem .4rem;border-radius:9999px;font-size:.7rem;font-weight:500}
     .badge-pending{background:#fef3c7;color:#b45309}
     .badge-in_progress{background:#dbeafe;color:#1d4ed8}
     .badge-completed{background:#d1fae5;color:#047857}
@@ -55,7 +55,8 @@
       <a href="clients.html">Clients</a>
       <a href="projects.html">Projets</a>
       <a href="finances.html">Finances</a>
-      <button class="btn btn-secondary" id="logout-btn">Déconnexion</button>
+      <a href="profile.html">Profil</a>
+      <button class="btn btn-secondary" id="logout-btn" style="font-size:.72rem;padding:.35rem .55rem">Déconnexion</button>
     </div>
   </header>
   <main>
@@ -92,8 +93,8 @@
     </div>
   </main>
   <script>
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    function statusLabel(s){const m={pending:"En attente",in_progress:"En cours",completed:"Terminé",cancelled:"Annulé"};return m[s]||s}
+    const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    function statusLabel(s){var m={pending:"En attente",in_progress:"En cours",completed:"Terminé",cancelled:"Annulé"};return m[s]||s}
     function escapeHtml(str){if(!str)return"";return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
     function formatMoney(n){return Number(n||0).toLocaleString("fr-FR")+" FCFA"}
     async function init(){
@@ -103,8 +104,7 @@
         const user=session.user;
         const{data:projects,error}=await supabaseClient.from("projects").select("*, clients(name)").eq("user_id",user.id).order("created_at",{ascending:false});
         if(error)throw error;
-        const list=projects||[];
-        let total=0,paid=0,reste=0;
+        var list=projects||[],total=0,paid=0,reste=0;
         list.forEach(function(p){var t=Number(p.amount||0),a=Number(p.amount_paid||0);total+=t;paid+=a;reste+=(t-a)});
         document.getElementById("stat-total").textContent=formatMoney(total);
         document.getElementById("stat-paid").textContent=formatMoney(paid);
