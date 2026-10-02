@@ -12,9 +12,9 @@
     .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
     .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
     .logo span{color:#4f46e5}
-    .nav-right{display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
-    .nav-right a,.user-name{font-size:.72rem;color:#64748b;text-decoration:none}
-    .btn{padding:.4rem .65rem;border-radius:.5rem;font-size:.72rem;font-weight:500;border:none;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center}
+    .nav-right{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap}
+    .nav-right a,.user-name{font-size:.7rem;color:#64748b;text-decoration:none}
+    .btn{padding:.4rem .6rem;border-radius:.5rem;font-size:.7rem;font-weight:500;border:none;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center}
     .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
     .btn-primary{background:#4f46e5;color:#fff}
     main{max-width:56rem;margin:0 auto;padding:1.25rem 1rem 3rem}
@@ -42,6 +42,7 @@
       <a href="projects.html">Projets</a>
       <a href="finances.html">Finances</a>
       <a href="profile.html">Profil</a>
+      <a href="plan.html">Plan</a>
       <span class="user-name" id="user-name">...</span>
       <button class="btn btn-secondary" id="logout-btn">Déconnexion</button>
     </div>
@@ -60,8 +61,8 @@
       <div class="actions">
         <a href="clients.html" class="btn btn-primary">+ Ajouter un client</a>
         <a href="projects.html" class="btn btn-secondary">+ Nouveau projet</a>
-        <a href="finances.html" class="btn btn-secondary">Voir les finances</a>
-        <a href="profile.html" class="btn btn-secondary">Mon profil</a>
+        <a href="finances.html" class="btn btn-secondary">Finances</a>
+        <a href="plan.html" class="btn btn-secondary">Mon plan</a>
       </div>
       <div class="empty" id="empty-state" style="display:none">
         <div class="icon">🚀</div>
@@ -94,7 +95,7 @@
         document.getElementById("loading").style.display="none";
         document.getElementById("content").style.display="block";
         document.getElementById("logout-btn").addEventListener("click",async function(){await supabaseClient.auth.signOut();window.location.href="login.html"})
-      }catch(err){console.error(err);window.location.href="login.html"}
+      }catch(err){window.location.href="login.html"}
     }
     init();
   </script>
