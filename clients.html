@@ -12,23 +12,23 @@
     .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
     .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
     .logo span{color:#4f46e5}
-    .nav-links{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap}
-    .nav-links a{font-size:.75rem;color:#64748b;text-decoration:none;padding:.2rem .3rem}
-    .btn{padding:.45rem .75rem;border-radius:.5rem;font-size:.75rem;font-weight:500;border:none;cursor:pointer;font-family:inherit}
+    .nav-links{display:flex;gap:.3rem;align-items:center;flex-wrap:wrap}
+    .nav-links a{font-size:.72rem;color:#64748b;text-decoration:none;padding:.15rem .25rem}
+    .btn{padding:.45rem .7rem;border-radius:.5rem;font-size:.75rem;font-weight:500;border:none;cursor:pointer;font-family:inherit}
     .btn-primary{background:#4f46e5;color:#fff}
     .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
     .btn-danger{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
-    .btn-sm{padding:.3rem .55rem;font-size:.7rem}
+    .btn-sm{padding:.3rem .5rem;font-size:.7rem}
     main{max-width:56rem;margin:0 auto;padding:1.25rem 1rem 3rem}
     .page-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;gap:.75rem}
     h1{font-size:1.4rem}
     .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden}
     table{width:100%;border-collapse:collapse;font-size:.8rem}
-    th,td{text-align:left;padding:.7rem .6rem;border-bottom:1px solid #e2e8f0}
+    th,td{text-align:left;padding:.65rem .55rem;border-bottom:1px solid #e2e8f0}
     th{background:#f8fafc;color:#64748b;font-weight:500}
     .empty{text-align:center;padding:2.5rem 1rem;color:#64748b}
     .empty .icon{font-size:2rem;margin-bottom:.75rem}
-    .badge{display:inline-block;padding:.15rem .45rem;border-radius:9999px;font-size:.7rem;font-weight:500}
+    .badge{display:inline-block;padding:.15rem .4rem;border-radius:9999px;font-size:.7rem;font-weight:500}
     .badge-active{background:#dbeafe;color:#1d4ed8}
     .badge-prospect{background:#f3e8ff;color:#7c3aed}
     .badge-inactive{background:#fee2e2;color:#b91c1c}
@@ -52,6 +52,7 @@
       <a href="clients.html">Clients</a>
       <a href="projects.html">Projets</a>
       <a href="finances.html">Finances</a>
+      <a href="profile.html">Profil</a>
       <button class="btn btn-secondary btn-sm" id="logout-btn">Déconnexion</button>
     </div>
   </header>
@@ -72,7 +73,7 @@
       <div id="empty" class="empty" style="display:none">
         <div class="icon">👥</div>
         <h3>Aucun client</h3>
-        <p>Ajoutez votre premier client pour commencer.</p>
+        <p>Ajoutez votre premier client.</p>
         <button class="btn btn-primary" id="btn-add-empty" style="margin-top:1rem">+ Ajouter un client</button>
       </div>
     </div>
@@ -131,12 +132,7 @@
       }).join("")
     }
     function editClient(client){openModal(client)}
-    async function deleteClient(id){
-      if(!confirm("Supprimer ce client ?"))return;
-      const{error}=await supabaseClient.from("clients").delete().eq("id",id);
-      if(error){alert(error.message);return}
-      loadClients()
-    }
+    async function deleteClient(id){if(!confirm("Supprimer ce client ?"))return;const{error}=await supabaseClient.from("clients").delete().eq("id",id);if(error){alert(error.message);return}loadClients()}
     document.getElementById("btn-add").addEventListener("click",function(){openModal(null)});
     document.getElementById("btn-add-empty").addEventListener("click",function(){openModal(null)});
     document.getElementById("btn-cancel").addEventListener("click",closeModal);
@@ -152,11 +148,7 @@
       closeModal();loadClients()
     });
     document.getElementById("logout-btn").addEventListener("click",async function(){await supabaseClient.auth.signOut();window.location.href="login.html"});
-    (async function(){
-      const{data:{session}}=await supabaseClient.auth.getSession();
-      if(!session){window.location.href="login.html";return}
-      currentUser=session.user;loadClients()
-    })();
+    (async function(){const{data:{session}}=await supabaseClient.auth.getSession();if(!session){window.location.href="login.html";return}currentUser=session.user;loadClients()})();
   </script>
 </body>
 </html>
