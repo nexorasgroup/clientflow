@@ -12,8 +12,8 @@
     .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
     .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
     .logo span{color:#4f46e5}
-    .nav-links{display:flex;gap:.3rem;align-items:center;flex-wrap:wrap}
-    .nav-links a{font-size:.72rem;color:#64748b;text-decoration:none;padding:.15rem .25rem}
+    .nav-links{display:flex;gap:.25rem;align-items:center;flex-wrap:wrap}
+    .nav-links a{font-size:.7rem;color:#64748b;text-decoration:none;padding:.15rem .2rem}
     .btn{padding:.45rem .7rem;border-radius:.5rem;font-size:.75rem;font-weight:500;border:none;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center}
     .btn-primary{background:#4f46e5;color:#fff}
     .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
@@ -56,7 +56,8 @@
       <a href="projects.html">Projets</a>
       <a href="finances.html">Finances</a>
       <a href="profile.html">Profil</a>
-      <button class="btn btn-secondary" id="logout-btn" style="font-size:.72rem;padding:.35rem .55rem">Déconnexion</button>
+      <a href="plan.html">Plan</a>
+      <button class="btn btn-secondary" id="logout-btn" style="font-size:.7rem;padding:.3rem .5rem">Déconnexion</button>
     </div>
   </header>
   <main>
@@ -77,9 +78,7 @@
         <div class="card-header">Détail par projet</div>
         <div id="table-wrap" style="overflow-x:auto;display:none">
           <table>
-            <thead>
-              <tr><th>Projet</th><th>Client</th><th>Facturé</th><th>Encaissé</th><th>Reste</th><th>Statut</th></tr>
-            </thead>
+            <thead><tr><th>Projet</th><th>Client</th><th>Facturé</th><th>Encaissé</th><th>Reste</th><th>Statut</th></tr></thead>
             <tbody id="finance-tbody"></tbody>
           </table>
         </div>
