@@ -1,154 +1,66 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tableau de bord — ClientFlow</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
-      min-height: 100vh;
-    }
-    .navbar {
-      background: white;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 0 1.25rem;
-      height: 3.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      text-decoration: none;
-      color: inherit;
-    }
-    .logo span { color: #4f46e5; }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .user-name { font-size: 0.875rem; color: #64748b; }
-    .btn {
-      padding: 0.5rem 0.875rem;
-      border-radius: 0.5rem;
-      font-size: 0.8125rem;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-    }
-    .btn-secondary {
-      background: white;
-      border: 1px solid #e2e8f0;
-      color: #334155;
-    }
-    .btn-primary { background: #4f46e5; color: white; }
-    main {
-      max-width: 56rem;
-      margin: 0 auto;
-      padding: 1.5rem 1.25rem 3rem;
-    }
-    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
-    .subtitle {
-      color: #64748b;
-      font-size: 0.875rem;
-      margin-bottom: 1.5rem;
-    }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.875rem;
-      margin-bottom: 1.75rem;
-    }
-    @media (min-width: 640px) {
-      .stats { grid-template-columns: repeat(4, 1fr); }
-    }
-    .stat-card {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
-      padding: 1rem;
-    }
-    .stat-card h3 {
-      font-size: 0.75rem;
-      color: #64748b;
-      font-weight: 500;
-      margin-bottom: 0.25rem;
-    }
-    .stat-card p { font-size: 1.5rem; font-weight: 700; }
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.625rem;
-      margin-bottom: 1.75rem;
-    }
-    .empty {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
-      padding: 2.5rem 1.25rem;
-      text-align: center;
-    }
-    .empty .icon { font-size: 2.25rem; margin-bottom: 0.75rem; }
-    .empty h3 { margin-bottom: 0.5rem; }
-    .empty p {
-      color: #64748b;
-      font-size: 0.875rem;
-      margin-bottom: 1.25rem;
-    }
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      color: #64748b;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh}
+    .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
+    .logo span{color:#4f46e5}
+    .nav-right{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+    .nav-right a,.user-name{font-size:.75rem;color:#64748b;text-decoration:none}
+    .btn{padding:.45rem .7rem;border-radius:.5rem;font-size:.75rem;font-weight:500;border:none;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center}
+    .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
+    .btn-primary{background:#4f46e5;color:#fff}
+    main{max-width:56rem;margin:0 auto;padding:1.25rem 1rem 3rem}
+    h1{font-size:1.4rem;margin-bottom:.25rem}
+    .subtitle{color:#64748b;font-size:.875rem;margin-bottom:1.25rem}
+    .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-bottom:1.5rem}
+    @media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr)}}
+    .stat-card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem}
+    .stat-card h3{font-size:.75rem;color:#64748b;font-weight:500;margin-bottom:.25rem}
+    .stat-card p{font-size:1.4rem;font-weight:700}
+    .actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.5rem}
+    .empty{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:2.5rem 1rem;text-align:center}
+    .empty .icon{font-size:2.25rem;margin-bottom:.75rem}
+    .empty h3{margin-bottom:.5rem}
+    .empty p{color:#64748b;font-size:.875rem;margin-bottom:1.25rem}
+    .loading{text-align:center;padding:3rem;color:#64748b}
   </style>
 </head>
 <body>
   <header class="navbar">
     <a href="dashboard.html" class="logo">Client<span>Flow</span></a>
     <div class="nav-right">
-      <a href="index.html" class="btn btn-secondary">Accueil</a>
-      <a href="clients.html" class="btn btn-secondary">Clients</a>
-      <a href="projects.html" class="btn btn-secondary">Projets</a>
+      <a href="index.html">Accueil</a>
+      <a href="clients.html">Clients</a>
+      <a href="projects.html">Projets</a>
+      <a href="finances.html">Finances</a>
       <span class="user-name" id="user-name">...</span>
       <button class="btn btn-secondary" id="logout-btn">Déconnexion</button>
     </div>
   </header>
-
   <main>
     <div id="loading" class="loading">Chargement...</div>
     <div id="content" style="display:none">
       <h1 id="welcome">Bonjour 👋</h1>
       <p class="subtitle">Voici un aperçu de votre activité.</p>
-
       <div class="stats">
         <div class="stat-card"><h3>Clients</h3><p id="stat-clients">0</p></div>
         <div class="stat-card"><h3>Projets</h3><p id="stat-projects">0</p></div>
         <div class="stat-card"><h3>En cours</h3><p id="stat-active">0</p></div>
         <div class="stat-card"><h3>Revenus</h3><p id="stat-revenue">0</p></div>
       </div>
-
       <div class="actions">
         <a href="clients.html" class="btn btn-primary">+ Ajouter un client</a>
         <a href="projects.html" class="btn btn-secondary">+ Nouveau projet</a>
-        <a href="clients.html" class="btn btn-secondary">Voir mes clients</a>
+        <a href="finances.html" class="btn btn-secondary">Voir les finances</a>
       </div>
-
       <div class="empty" id="empty-state" style="display:none">
         <div class="icon">🚀</div>
         <h3>Bienvenue sur ClientFlow !</h3>
@@ -157,59 +69,30 @@
       </div>
     </div>
   </main>
-
   <script>
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    async function init() {
-      try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) {
-          window.location.href = "login.html";
-          return;
-        }
-
-        const user = session.user;
-        const fullName = user.user_metadata?.full_name || user.email || "Utilisateur";
-        const firstName = fullName.split(" ")[0];
-
-        document.getElementById("user-name").textContent = fullName;
-        document.getElementById("welcome").textContent = "Bonjour, " + firstName + " 👋";
-
-        const { count: clientsCount } = await supabaseClient
-          .from("clients")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", user.id);
-
-        const { data: projects } = await supabaseClient
-          .from("projects")
-          .select("amount, status")
-          .eq("user_id", user.id);
-
-        const projectsCount = projects ? projects.length : 0;
-        const activeCount = projects ? projects.filter(p => p.status === "in_progress").length : 0;
-        const revenue = projects ? projects.reduce((sum, p) => sum + (Number(p.amount) || 0), 0) : 0;
-
-        document.getElementById("stat-clients").textContent = clientsCount || 0;
-        document.getElementById("stat-projects").textContent = projectsCount;
-        document.getElementById("stat-active").textContent = activeCount;
-        document.getElementById("stat-revenue").textContent = revenue.toLocaleString("fr-FR");
-
-        if (!clientsCount || clientsCount === 0) {
-          document.getElementById("empty-state").style.display = "block";
-        }
-
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("content").style.display = "block";
-
-        document.getElementById("logout-btn").addEventListener("click", async () => {
-          await supabaseClient.auth.signOut();
-          window.location.href = "login.html";
-        });
-      } catch (err) {
-        console.error(err);
-        window.location.href = "login.html";
-      }
+    const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    async function init(){
+      try{
+        const{data:{session}}=await supabaseClient.auth.getSession();
+        if(!session){window.location.href="login.html";return}
+        const user=session.user;
+        const fullName=user.user_metadata&&user.user_metadata.full_name||user.email||"Utilisateur";
+        document.getElementById("user-name").textContent=fullName;
+        document.getElementById("welcome").textContent="Bonjour, "+fullName.split(" ")[0]+" 👋";
+        const{count:clientsCount}=await supabaseClient.from("clients").select("*",{count:"exact",head:true}).eq("user_id",user.id);
+        const{data:projects}=await supabaseClient.from("projects").select("amount,status").eq("user_id",user.id);
+        const projectsCount=projects?projects.length:0;
+        const activeCount=projects?projects.filter(function(p){return p.status==="in_progress"}).length:0;
+        const revenue=projects?projects.reduce(function(s,p){return s+(Number(p.amount)||0)},0):0;
+        document.getElementById("stat-clients").textContent=clientsCount||0;
+        document.getElementById("stat-projects").textContent=projectsCount;
+        document.getElementById("stat-active").textContent=activeCount;
+        document.getElementById("stat-revenue").textContent=revenue.toLocaleString("fr-FR");
+        if(!clientsCount)document.getElementById("empty-state").style.display="block";
+        document.getElementById("loading").style.display="none";
+        document.getElementById("content").style.display="block";
+        document.getElementById("logout-btn").addEventListener("click",async function(){await supabaseClient.auth.signOut();window.location.href="login.html"})
+      }catch(err){console.error(err);window.location.href="login.html"}
     }
     init();
   </script>
