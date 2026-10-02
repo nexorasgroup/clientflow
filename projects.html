@@ -9,11 +9,12 @@
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{font-family:system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh}
-    .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:30}
     .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
     .logo span{color:#4f46e5}
-    .nav-links{display:flex;gap:.25rem;align-items:center;flex-wrap:wrap}
-    .nav-links a{font-size:.7rem;color:#64748b;text-decoration:none;padding:.15rem .2rem}
+    .menu-toggle{display:none;background:none;border:1px solid #e2e8f0;border-radius:.5rem;padding:.35rem .6rem;font-size:1.1rem;cursor:pointer}
+    .nav-menu{display:flex;gap:.3rem;align-items:center;flex-wrap:wrap}
+    .nav-menu a{font-size:.72rem;color:#64748b;text-decoration:none;padding:.2rem .3rem}
     .btn{padding:.45rem .7rem;border-radius:.5rem;font-size:.75rem;font-weight:500;border:none;cursor:pointer;font-family:inherit}
     .btn-primary{background:#4f46e5;color:#fff}
     .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
@@ -44,12 +45,20 @@
     .error{background:#fef2f2;color:#dc2626;padding:.75rem 1rem;border-radius:.5rem;font-size:.875rem;margin-bottom:1rem;display:none}
     .reste{font-weight:600;color:#b45309}
     .reste-ok{color:#047857}
+    @media(max-width:768px){
+      .menu-toggle{display:block}
+      .nav-menu{display:none;position:absolute;top:3.75rem;left:0;right:0;background:#fff;border-bottom:1px solid #e2e8f0;flex-direction:column;align-items:stretch;padding:.5rem 0;z-index:40}
+      .nav-menu.open{display:flex}
+      .nav-menu a{padding:.75rem 1.25rem;font-size:.9rem;border-bottom:1px solid #f1f5f9}
+      .nav-menu .btn{margin:.5rem 1.25rem;width:calc(100% - 2.5rem);justify-content:center}
+    }
   </style>
 </head>
 <body>
   <header class="navbar">
     <a href="dashboard.html" class="logo">Client<span>Flow</span></a>
-    <div class="nav-links">
+    <button class="menu-toggle" id="menu-toggle">☰</button>
+    <nav class="nav-menu" id="nav-menu">
       <a href="index.html">Accueil</a>
       <a href="dashboard.html">Dashboard</a>
       <a href="clients.html">Clients</a>
@@ -57,8 +66,8 @@
       <a href="finances.html">Finances</a>
       <a href="profile.html">Profil</a>
       <a href="plan.html">Plan</a>
-      <button class="btn btn-secondary btn-sm" id="logout-btn">Déconnexion</button>
-    </div>
+      <button class="btn btn-secondary" id="logout-btn">Déconnexion</button>
+    </nav>
   </header>
   <main>
     <div class="page-header">
@@ -177,5 +186,6 @@
       loadProjects()
     })();
   </script>
+  <script src="js/nav.js"></script>
 </body>
 </html>
