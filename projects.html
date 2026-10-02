@@ -58,17 +58,30 @@
       <button class="btn btn-secondary btn-sm" id="logout-btn">Déconnexion</button>
     </div>
   </header>
+
   <main>
     <div class="page-header">
       <h1>Projets</h1>
       <button class="btn btn-primary" id="btn-add">+ Nouveau projet</button>
     </div>
+
     <div id="error" class="error"></div>
+
     <div class="card">
       <div id="loading" style="padding:2rem;text-align:center;color:#64748b">Chargement...</div>
       <div id="table-wrap" style="display:none;overflow-x:auto">
         <table>
-          <thead><tr><th>Titre</th><th>Client</th><th>Total</th><th>Avancé</th><th>Reste</th><th>Statut</th><th>Actions</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Titre</th>
+              <th>Client</th>
+              <th>Total</th>
+              <th>Avancé</th>
+              <th>Reste</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
           <tbody id="projects-tbody"></tbody>
         </table>
       </div>
@@ -80,17 +93,31 @@
       </div>
     </div>
   </main>
+
   <div class="modal-overlay" id="modal">
     <div class="modal">
       <h2 id="modal-title">Nouveau projet</h2>
       <div id="modal-error" class="error"></div>
       <form id="project-form">
         <input type="hidden" id="project-id"/>
-        <label>Titre *</label><input type="text" id="project-title" required/>
-        <label>Client</label><select id="project-client"><option value="">— Aucun —</option></select>
-        <label>Montant total (FCFA) *</label><input type="number" id="project-amount" min="0" step="100" value="0" required/>
-        <label>Montant avancé (FCFA)</label><input type="number" id="project-paid" min="0" step="100" value="0"/>
-        <label>Description</label><textarea id="project-description" rows="2"></textarea>
+
+        <label>Titre *</label>
+        <input type="text" id="project-title" required/>
+
+        <label>Client</label>
+        <select id="project-client">
+          <option value="">— Aucun —</option>
+        </select>
+
+        <label>Montant total (FCFA) *</label>
+        <input type="number" id="project-amount" min="0" step="1" value="0" required placeholder="Ex: 1500000"/>
+
+        <label>Montant avancé (FCFA)</label>
+        <input type="number" id="project-paid" min="0" step="1" value="0" placeholder="Ex: 500000"/>
+
+        <label>Description</label>
+        <textarea id="project-description" rows="2"></textarea>
+
         <label>Statut</label>
         <select id="project-status">
           <option value="pending">En attente</option>
@@ -98,7 +125,10 @@
           <option value="completed">Terminé</option>
           <option value="cancelled">Annulé</option>
         </select>
-        <label>Date d'échéance</label><input type="date" id="project-due"/>
+
+        <label>Date d'échéance</label>
+        <input type="date" id="project-due"/>
+
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" id="btn-cancel">Annuler</button>
           <button type="submit" class="btn btn-primary">Enregistrer</button>
@@ -106,76 +136,197 @@
       </form>
     </div>
   </div>
+
   <script>
-    const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-    let currentUser=null;
-    function statusLabel(s){var m={pending:"En attente",in_progress:"En cours",completed:"Terminé",cancelled:"Annulé"};return m[s]||s}
-    function escapeHtml(str){if(!str)return"";return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
-    function formatMoney(n){return Number(n||0).toLocaleString("fr-FR")}
-    async function loadClientsForSelect(){
-      const{data}=await supabaseClient.from("clients").select("id, name").eq("user_id",currentUser.id).order("name");
-      var select=document.getElementById("project-client");
-      select.innerHTML='<option value="">— Aucun —</option>'+(data||[]).map(function(c){return'<option value="'+c.id+'">'+escapeHtml(c.name)+'</option>'}).join("")
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let currentUser = null;
+
+    function statusLabel(s) {
+      var m = { pending: "En attente", in_progress: "En cours", completed: "Terminé", cancelled: "Annulé" };
+      return m[s] || s;
     }
-    function openModal(project){
-      document.getElementById("modal-error").style.display="none";
-      document.getElementById("project-id").value=project?project.id:"";
-      document.getElementById("modal-title").textContent=project?"Modifier le projet":"Nouveau projet";
-      document.getElementById("project-title").value=project?project.title:"";
-      document.getElementById("project-client").value=project&&project.client_id?project.client_id:"";
-      document.getElementById("project-amount").value=project?project.amount||0:0;
-      document.getElementById("project-paid").value=project?project.amount_paid||0:0;
-      document.getElementById("project-description").value=project&&project.description?project.description:"";
-      document.getElementById("project-status").value=project&&project.status?project.status:"pending";
-      document.getElementById("project-due").value=project&&project.due_date?project.due_date:"";
-      document.getElementById("modal").classList.add("open")
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
-    function closeModal(){document.getElementById("modal").classList.remove("open")}
-    async function loadProjects(){
-      const{data,error}=await supabaseClient.from("projects").select("*, clients(name)").eq("user_id",currentUser.id).order("created_at",{ascending:false});
-      document.getElementById("loading").style.display="none";
-      if(error){document.getElementById("error").textContent=error.message;document.getElementById("error").style.display="block";return}
-      var tbody=document.getElementById("projects-tbody"),empty=document.getElementById("empty"),tableWrap=document.getElementById("table-wrap");
-      if(!data||data.length===0){tableWrap.style.display="none";empty.style.display="block";return}
-      empty.style.display="none";tableWrap.style.display="block";
-      tbody.innerHTML=data.map(function(p){
-        var total=Number(p.amount||0),paid=Number(p.amount_paid||0),reste=total-paid;
-        var clientName=p.clients?p.clients.name:"—";
-        var resteClass=reste<=0?"reste reste-ok":"reste";
-        return"<tr><td><strong>"+escapeHtml(p.title)+"</strong></td><td>"+escapeHtml(clientName)+"</td><td>"+formatMoney(total)+"</td><td>"+formatMoney(paid)+"</td><td class=\""+resteClass+"\">"+formatMoney(reste)+"</td><td><span class=\"badge badge-"+p.status+"\">"+statusLabel(p.status)+"</span></td><td><button class=\"btn btn-secondary btn-sm\" onclick='editProject("+JSON.stringify(p).replace(/'/g,"&#39;")+")'>Modifier</button> <button class=\"btn btn-danger btn-sm\" onclick=\"deleteProject('"+p.id+"')\">Suppr.</button></td></tr>"
-      }).join("")
+
+    function formatMoney(n) {
+      return Number(n || 0).toLocaleString("fr-FR");
     }
-    function editProject(project){openModal(project)}
-    async function deleteProject(id){
-      if(!confirm("Supprimer ce projet ?"))return;
-      const{error}=await supabaseClient.from("projects").delete().eq("id",id);
-      if(error){alert(error.message);return}
-      loadProjects()
+
+    async function loadClientsForSelect() {
+      const { data } = await supabaseClient
+        .from("clients")
+        .select("id, name")
+        .eq("user_id", currentUser.id)
+        .order("name");
+      var select = document.getElementById("project-client");
+      select.innerHTML = '<option value="">— Aucun —</option>' +
+        (data || []).map(function (c) {
+          return '<option value="' + c.id + '">' + escapeHtml(c.name) + '</option>';
+        }).join("");
     }
-    document.getElementById("btn-add").addEventListener("click",function(){openModal(null)});
-    document.getElementById("btn-add-empty").addEventListener("click",function(){openModal(null)});
-    document.getElementById("btn-cancel").addEventListener("click",closeModal);
-    document.getElementById("modal").addEventListener("click",function(e){if(e.target.id==="modal")closeModal()});
-    document.getElementById("project-form").addEventListener("submit",async function(e){
-      e.preventDefault();
-      var id=document.getElementById("project-id").value;
-      var total=Number(document.getElementById("project-amount").value)||0;
-      var paid=Number(document.getElementById("project-paid").value)||0;
-      var errEl=document.getElementById("modal-error");errEl.style.display="none";
-      if(paid>total){errEl.textContent="Le montant avancé ne peut pas dépasser le montant total.";errEl.style.display="block";return}
-      var payload={title:document.getElementById("project-title").value.trim(),client_id:document.getElementById("project-client").value||null,amount:total,amount_paid:paid,description:document.getElementById("project-description").value.trim()||null,status:document.getElementById("project-status").value,due_date:document.getElementById("project-due").value||null,user_id:currentUser.id};
-      if(!id){var res=await supabaseClient.from("projects").select("*",{count:"exact",head:true}).eq("user_id",currentUser.id);if(res.count>=3){errEl.textContent="Plan Free limité à 3 projets.";errEl.style.display="block";return}}
-      var error;if(id){var r=await supabaseClient.from("projects").update(payload).eq("id",id);error=r.error}else{var r2=await supabaseClient.from("projects").insert(payload);error=r2.error}
-      if(error){errEl.textContent=error.message;errEl.style.display="block";return}
-      closeModal();loadProjects()
+
+    function openModal(project) {
+      document.getElementById("modal-error").style.display = "none";
+      document.getElementById("project-id").value = project ? project.id : "";
+      document.getElementById("modal-title").textContent = project ? "Modifier le projet" : "Nouveau projet";
+      document.getElementById("project-title").value = project ? project.title : "";
+      document.getElementById("project-client").value = project && project.client_id ? project.client_id : "";
+      document.getElementById("project-amount").value = project ? (project.amount || 0) : 0;
+      document.getElementById("project-paid").value = project ? (project.amount_paid || 0) : 0;
+      document.getElementById("project-description").value = project && project.description ? project.description : "";
+      document.getElementById("project-status").value = project && project.status ? project.status : "pending";
+      document.getElementById("project-due").value = project && project.due_date ? project.due_date : "";
+      document.getElementById("modal").classList.add("open");
+    }
+
+    function closeModal() {
+      document.getElementById("modal").classList.remove("open");
+    }
+
+    async function loadProjects() {
+      const { data, error } = await supabaseClient
+        .from("projects")
+        .select("*, clients(name)")
+        .eq("user_id", currentUser.id)
+        .order("created_at", { ascending: false });
+
+      document.getElementById("loading").style.display = "none";
+
+      if (error) {
+        document.getElementById("error").textContent = error.message;
+        document.getElementById("error").style.display = "block";
+        return;
+      }
+
+      var tbody = document.getElementById("projects-tbody");
+      var empty = document.getElementById("empty");
+      var tableWrap = document.getElementById("table-wrap");
+
+      if (!data || data.length === 0) {
+        tableWrap.style.display = "none";
+        empty.style.display = "block";
+        return;
+      }
+
+      empty.style.display = "none";
+      tableWrap.style.display = "block";
+
+      tbody.innerHTML = data.map(function (p) {
+        var total = Number(p.amount || 0);
+        var paid = Number(p.amount_paid || 0);
+        var reste = total - paid;
+        var clientName = p.clients ? p.clients.name : "—";
+        var resteClass = reste <= 0 ? "reste reste-ok" : "reste";
+
+        return "<tr>" +
+          "<td><strong>" + escapeHtml(p.title) + "</strong></td>" +
+          "<td>" + escapeHtml(clientName) + "</td>" +
+          "<td>" + formatMoney(total) + "</td>" +
+          "<td>" + formatMoney(paid) + "</td>" +
+          "<td class=\"" + resteClass + "\">" + formatMoney(reste) + "</td>" +
+          "<td><span class=\"badge badge-" + p.status + "\">" + statusLabel(p.status) + "</span></td>" +
+          "<td>" +
+            "<button class=\"btn btn-secondary btn-sm\" onclick='editProject(" + JSON.stringify(p).replace(/'/g, "&#39;") + ")'>Modifier</button> " +
+            "<button class=\"btn btn-danger btn-sm\" onclick=\"deleteProject('" + p.id + "')\">Suppr.</button>" +
+          "</td>" +
+        "</tr>";
+      }).join("");
+    }
+
+    function editProject(project) {
+      openModal(project);
+    }
+
+    async function deleteProject(id) {
+      if (!confirm("Supprimer ce projet ?")) return;
+      const { error } = await supabaseClient.from("projects").delete().eq("id", id);
+      if (error) {
+        alert(error.message);
+        return;
+      }
+      loadProjects();
+    }
+
+    document.getElementById("btn-add").addEventListener("click", function () { openModal(null); });
+    document.getElementById("btn-add-empty").addEventListener("click", function () { openModal(null); });
+    document.getElementById("btn-cancel").addEventListener("click", closeModal);
+    document.getElementById("modal").addEventListener("click", function (e) {
+      if (e.target.id === "modal") closeModal();
     });
-    document.getElementById("logout-btn").addEventListener("click",async function(){await supabaseClient.auth.signOut();window.location.href="login.html"});
-    (async function(){
-      const{data:{session}}=await supabaseClient.auth.getSession();
-      if(!session){window.location.href="login.html";return}
-      currentUser=session.user;
+
+    document.getElementById("project-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var id = document.getElementById("project-id").value;
+      var total = Number(document.getElementById("project-amount").value) || 0;
+      var paid = Number(document.getElementById("project-paid").value) || 0;
+      var errEl = document.getElementById("modal-error");
+      errEl.style.display = "none";
+
+      if (paid > total) {
+        errEl.textContent = "Le montant avancé ne peut pas dépasser le montant total.";
+        errEl.style.display = "block";
+        return;
+      }
+
+      var payload = {
+        title: document.getElementById("project-title").value.trim(),
+        client_id: document.getElementById("project-client").value || null,
+        amount: total,
+        amount_paid: paid,
+        description: document.getElementById("project-description").value.trim() || null,
+        status: document.getElementById("project-status").value,
+        due_date: document.getElementById("project-due").value || null,
+        user_id: currentUser.id
+      };
+
+      if (!id) {
+        var res = await supabaseClient
+          .from("projects")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", currentUser.id);
+        if (res.count >= 3) {
+          errEl.textContent = "Plan Free limité à 3 projets.";
+          errEl.style.display = "block";
+          return;
+        }
+      }
+
+      var error;
+      if (id) {
+        var r = await supabaseClient.from("projects").update(payload).eq("id", id);
+        error = r.error;
+      } else {
+        var r2 = await supabaseClient.from("projects").insert(payload);
+        error = r2.error;
+      }
+
+      if (error) {
+        errEl.textContent = error.message;
+        errEl.style.display = "block";
+        return;
+      }
+
+      closeModal();
+      loadProjects();
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async function () {
+      await supabaseClient.auth.signOut();
+      window.location.href = "login.html";
+    });
+
+    (async function () {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        window.location.href = "login.html";
+        return;
+      }
+      currentUser = session.user;
       await loadClientsForSelect();
-      loadProjects()
+      loadProjects();
     })();
   </script>
 </body>
