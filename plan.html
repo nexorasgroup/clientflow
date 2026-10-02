@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mon plan — ClientFlow</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase.js"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh}
+    .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
+    .logo span{color:#4f46e5}
+    .nav-links{display:flex;gap:.25rem;align-items:center;flex-wrap:wrap}
+    .nav-links a{font-size:.7rem;color:#64748b;text-decoration:none;padding:.15rem .2rem}
+    .btn{padding:.55rem .9rem;border-radius:.5rem;font-size:.85rem;font-weight:500;border:none;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
+    .btn-whatsapp{background:#25D366;color:#fff;margin-bottom:.5rem}
+    main{max-width:36rem;margin:0 auto;padding:1.25rem 1rem 3rem}
+    h1{font-size:1.4rem;margin-bottom:.25rem}
+    .subtitle{color:#64748b;font-size:.875rem;margin-bottom:1.25rem}
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;margin-bottom:1rem}
+    .plan-badge{display:inline-block;background:#e0e7ff;color:#4338ca;font-size:.75rem;font-weight:600;padding:.3rem .7rem;border-radius:9999px;margin-bottom:.75rem}
+    .plan-name{font-size:1.35rem;font-weight:700;margin-bottom:.25rem}
+    .plan-price{font-size:1.1rem;color:#64748b;margin-bottom:1rem}
+    .usage{margin:1rem 0}
+    .usage-row{display:flex;justify-content:space-between;font-size:.875rem;margin-bottom:.35rem}
+    .usage-bar{height:.5rem;background:#e2e8f0;border-radius:9999px;overflow:hidden;margin-bottom:.85rem}
+    .usage-fill{height:100%;background:#4f46e5;border-radius:9999px}
+    .usage-fill.warn{background:#f59e0b}
+    .usage-fill.full{background:#dc2626}
+    ul{list-style:none;margin:1rem 0}
+    ul li{font-size:.875rem;color:#475569;margin-bottom:.45rem}
+    ul li::before{content:"✓ ";color:#10b981;font-weight:700}
+    .loading{text-align:center;padding:3rem;color:#64748b}
+    .note{font-size:.8rem;color:#64748b;margin-top:1rem;line-height:1.45}
+    .contact-list{font-size:.875rem;color:#475569;margin:.75rem 0}
+    .contact-list a{color:#4f46e5;text-decoration:none}
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <a href="dashboard.html" class="logo">Client<span>Flow</span></a>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="clients.html">Clients</a>
+      <a href="projects.html">Projets</a>
+      <a href="finances.html">Finances</a>
+      <a href="profile.html">Profil</a>
+      <a href="plan.html">Plan</a>
+      <button class="btn btn-secondary" id="logout-btn" style="font-size:.7rem;padding:.3rem .5rem">Déconnexion</button>
+    </div>
+  </header>
+  <main>
+    <div id="loading" class="loading">Chargement...</div>
+    <div id="content" style="display:none">
+      <h1>Mon plan</h1>
+      <p class="subtitle">Votre offre actuelle et vos limites d’utilisation.</p>
+      <div class="card">
+        <span class="plan-badge">PLAN ACTUEL</span>
+        <div class="plan-name">Free</div>
+        <div class="plan-price">0 FCFA / mois</div>
+        <div class="usage">
+          <div class="usage-row"><span>Clients</span><span id="usage-clients">0 / 10</span></div>
+          <div class="usage-bar"><div class="usage-fill" id="bar-clients" style="width:0%"></div></div>
+          <div class="usage-row"><span>Projets</span><span id="usage-projects">0 / 3</span></div>
+          <div class="usage-bar"><div class="usage-fill" id="bar-projects" style="width:0%"></div></div>
+        </div>
+        <ul>
+          <li>Jusqu’à 10 clients</li>
+          <li>Jusqu’à 3 projets</li>
+          <li>Tableau de bord</li>
+          <li>Gestion finances de base</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="plan-name" style="font-size:1.15rem">Passer au plan Pro</div>
+        <div class="plan-price">Contactez-nous pour souscrire</div>
+        <ul>
+          <li>Clients illimités</li>
+          <li>Projets illimités</li>
+          <li>Suivi financier avancé</li>
+          <li>Support prioritaire</li>
+        </ul>
+        <a class="btn btn-whatsapp" style="width:100%" href="https://wa.me/2290160823106?text=Bonjour%2C%20je%20souhaite%20passer%20au%20plan%20Pro%20ClientFlow" target="_blank">WhatsApp : 01 60 82 31 06</a>
+        <a class="btn btn-whatsapp" style="width:100%" href="https://wa.me/2290165398337?text=Bonjour%2C%20je%20souhaite%20passer%20au%20plan%20Pro%20ClientFlow" target="_blank">WhatsApp : 01 65 39 83 37</a>
+        <div class="contact-list">
+          <div>📞 Appel : <a href="tel:+2290160823106">+229 01 60 82 31 06</a></div>
+          <div>📞 Appel : <a href="tel:+2290165398337">+229 01 65 39 83 37</a></div>
+        </div>
+        <p class="note">Le passage au plan payant se fait manuellement pour le moment.</p>
+      </div>
+    </div>
+  </main>
+  <script>
+    const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    function setBar(el,pct){el.style.width=Math.min(100,pct)+"%";el.classList.remove("warn","full");if(pct>=100)el.classList.add("full");else if(pct>=70)el.classList.add("warn")}
+    async function init(){
+      try{
+        const{data:{session}}=await supabaseClient.auth.getSession();
+        if(!session){window.location.href="login.html";return}
+        const user=session.user;
+        const{count:c}=await supabaseClient.from("clients").select("*",{count:"exact",head:true}).eq("user_id",user.id);
+        const{count:p}=await supabaseClient.from("projects").select("*",{count:"exact",head:true}).eq("user_id",user.id);
+        var cc=c||0,pp=p||0;
+        document.getElementById("usage-clients").textContent=cc+" / 10";
+        document.getElementById("usage-projects").textContent=pp+" / 3";
+        setBar(document.getElementById("bar-clients"),(cc/10)*100);
+        setBar(document.getElementById("bar-projects"),(pp/3)*100);
+        document.getElementById("loading").style.display="none";
+        document.getElementById("content").style.display="block";
+        document.getElementById("logout-btn").addEventListener("click",async function(){await supabaseClient.auth.signOut();window.location.href="login.html"})
+      }catch(e){window.location.href="login.html"}
+    }
+    init();
+  </script>
+</body>
+</html>
