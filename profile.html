@@ -20,7 +20,8 @@
     main{max-width:32rem;margin:0 auto;padding:1.25rem 1rem 3rem}
     h1{font-size:1.4rem;margin-bottom:.25rem}
     .subtitle{color:#64748b;font-size:.875rem;margin-bottom:1.25rem}
-    .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem}
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1.25rem;margin-bottom:1rem}
+    .card h2{font-size:1.05rem;margin-bottom:1rem}
     label{display:block;font-size:.875rem;font-weight:500;margin-bottom:.3rem;color:#334155}
     input{width:100%;padding:.65rem .75rem;border:1px solid #e2e8f0;border-radius:.5rem;font-size:.9rem;margin-bottom:.9rem;font-family:inherit}
     input:focus{outline:none;border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.15)}
@@ -30,6 +31,8 @@
     .msg-ok{background:#ecfdf5;color:#047857}
     .msg-err{background:#fef2f2;color:#dc2626}
     .loading{text-align:center;padding:3rem;color:#64748b}
+    .show-password{display:flex;align-items:center;gap:.5rem;margin-bottom:1rem;font-size:.875rem;color:#64748b}
+    .show-password input{width:auto;margin:0}
   </style>
 </head>
 <body>
@@ -46,14 +49,20 @@
       <button class="btn btn-secondary" id="logout-btn" style="font-size:.7rem;padding:.3rem .5rem">Déconnexion</button>
     </div>
   </header>
+
   <main>
     <div id="loading" class="loading">Chargement...</div>
+
     <div id="content" style="display:none">
       <h1>Mon profil</h1>
-      <p class="subtitle">Vos informations personnelles et professionnelles.</p>
+      <p class="subtitle">Vos informations et sécurité du compte.</p>
+
+      <!-- Infos profil -->
       <div id="msg-ok" class="msg msg-ok"></div>
       <div id="msg-err" class="msg msg-err"></div>
+
       <div class="card">
+        <h2>Informations</h2>
         <form id="profile-form">
           <label>Nom *</label>
           <input type="text" id="last-name" required/>
@@ -69,57 +78,183 @@
           <input type="email" id="email" disabled/>
           <label>Numéro IFU <span class="optional">(optionnel)</span></label>
           <input type="text" id="ifu"/>
-          <button type="submit" class="btn btn-primary" id="btn-save" style="width:100%;margin-top:.5rem">Enregistrer les modifications</button>
+          <button type="submit" class="btn btn-primary" id="btn-save" style="width:100%;margin-top:.25rem">
+            Enregistrer les modifications
+          </button>
+        </form>
+      </div>
+
+      <!-- Mot de passe -->
+      <div id="msg-pwd-ok" class="msg msg-ok"></div>
+      <div id="msg-pwd-err" class="msg msg-err"></div>
+
+      <div class="card">
+        <h2>Changer le mot de passe</h2>
+        <form id="password-form">
+          <label>Nouveau mot de passe *</label>
+          <input type="password" id="new-password" required minlength="6" placeholder="Minimum 6 caractères"/>
+          <label>Confirmer le mot de passe *</label>
+          <input type="password" id="confirm-password" required minlength="6"/>
+          <label class="show-password">
+            <input type="checkbox" id="show-password"/>
+            Afficher les mots de passe
+          </label>
+          <button type="submit" class="btn btn-primary" id="btn-pwd" style="width:100%">
+            Mettre à jour le mot de passe
+          </button>
         </form>
       </div>
     </div>
   </main>
+
   <script>
-    const supabaseClient=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-    let currentUser=null;
-    async function init(){
-      try{
-        const{data:{session}}=await supabaseClient.auth.getSession();
-        if(!session){window.location.href="login.html";return}
-        currentUser=session.user;
-        const{data:profile}=await supabaseClient.from("profiles").select("*").eq("id",currentUser.id).single();
-        const meta=currentUser.user_metadata||{};
-        document.getElementById("last-name").value=(profile&&profile.last_name)||meta.last_name||"";
-        document.getElementById("first-name").value=(profile&&profile.first_name)||meta.first_name||"";
-        document.getElementById("phone").value=(profile&&profile.phone)||meta.phone||"";
-        document.getElementById("activity").value=(profile&&profile.activity)||meta.activity||"";
-        document.getElementById("location").value=(profile&&profile.location)||meta.location||"";
-        document.getElementById("email").value=currentUser.email||"";
-        document.getElementById("ifu").value=(profile&&profile.ifu)||meta.ifu||"";
-        document.getElementById("loading").style.display="none";
-        document.getElementById("content").style.display="block";
-        document.getElementById("logout-btn").addEventListener("click",async function(){await supabaseClient.auth.signOut();window.location.href="login.html"})
-      }catch(err){window.location.href="login.html"}
-    }
-    document.getElementById("profile-form").addEventListener("submit",async function(e){
-      e.preventDefault();
-      var msgOk=document.getElementById("msg-ok"),msgErr=document.getElementById("msg-err"),btn=document.getElementById("btn-save");
-      msgOk.style.display="none";msgErr.style.display="none";
-      var firstName=document.getElementById("first-name").value.trim();
-      var lastName=document.getElementById("last-name").value.trim();
-      var phone=document.getElementById("phone").value.trim();
-      var activity=document.getElementById("activity").value.trim();
-      var location=document.getElementById("location").value.trim();
-      var ifu=document.getElementById("ifu").value.trim();
-      var fullName=firstName+" "+lastName;
-      btn.disabled=true;btn.textContent="Enregistrement...";
-      try{
-        const{error}=await supabaseClient.from("profiles").upsert({
-          id:currentUser.id,email:currentUser.email,full_name:fullName,
-          first_name:firstName,last_name:lastName,phone:phone,activity:activity,
-          location:location||null,ifu:ifu||null
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    let currentUser = null;
+
+    async function init() {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session) {
+          window.location.href = "login.html";
+          return;
+        }
+        currentUser = session.user;
+
+        const { data: profile } = await supabaseClient
+          .from("profiles")
+          .select("*")
+          .eq("id", currentUser.id)
+          .single();
+
+        const meta = currentUser.user_metadata || {};
+
+        document.getElementById("last-name").value = (profile && profile.last_name) || meta.last_name || "";
+        document.getElementById("first-name").value = (profile && profile.first_name) || meta.first_name || "";
+        document.getElementById("phone").value = (profile && profile.phone) || meta.phone || "";
+        document.getElementById("activity").value = (profile && profile.activity) || meta.activity || "";
+        document.getElementById("location").value = (profile && profile.location) || meta.location || "";
+        document.getElementById("email").value = currentUser.email || "";
+        document.getElementById("ifu").value = (profile && profile.ifu) || meta.ifu || "";
+
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("content").style.display = "block";
+
+        document.getElementById("logout-btn").addEventListener("click", async function () {
+          await supabaseClient.auth.signOut();
+          window.location.href = "login.html";
         });
-        if(error)throw error;
-        await supabaseClient.auth.updateUser({data:{full_name:fullName,first_name:firstName,last_name:lastName,phone:phone,activity:activity,location:location||null,ifu:ifu||null}});
-        msgOk.textContent="Profil mis à jour avec succès.";msgOk.style.display="block"
-      }catch(err){msgErr.textContent=err.message||"Erreur lors de l'enregistrement.";msgErr.style.display="block"}
-      btn.disabled=false;btn.textContent="Enregistrer les modifications"
+      } catch (err) {
+        window.location.href = "login.html";
+      }
+    }
+
+    // Afficher / masquer mots de passe
+    document.getElementById("show-password").addEventListener("change", function () {
+      var type = this.checked ? "text" : "password";
+      document.getElementById("new-password").type = type;
+      document.getElementById("confirm-password").type = type;
     });
+
+    // Sauvegarder profil
+    document.getElementById("profile-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var msgOk = document.getElementById("msg-ok");
+      var msgErr = document.getElementById("msg-err");
+      var btn = document.getElementById("btn-save");
+      msgOk.style.display = "none";
+      msgErr.style.display = "none";
+
+      var firstName = document.getElementById("first-name").value.trim();
+      var lastName = document.getElementById("last-name").value.trim();
+      var phone = document.getElementById("phone").value.trim();
+      var activity = document.getElementById("activity").value.trim();
+      var location = document.getElementById("location").value.trim();
+      var ifu = document.getElementById("ifu").value.trim();
+      var fullName = firstName + " " + lastName;
+
+      btn.disabled = true;
+      btn.textContent = "Enregistrement...";
+
+      try {
+        const { error } = await supabaseClient.from("profiles").upsert({
+          id: currentUser.id,
+          email: currentUser.email,
+          full_name: fullName,
+          first_name: firstName,
+          last_name: lastName,
+          phone: phone,
+          activity: activity,
+          location: location || null,
+          ifu: ifu || null
+        });
+        if (error) throw error;
+
+        await supabaseClient.auth.updateUser({
+          data: {
+            full_name: fullName,
+            first_name: firstName,
+            last_name: lastName,
+            phone: phone,
+            activity: activity,
+            location: location || null,
+            ifu: ifu || null
+          }
+        });
+
+        msgOk.textContent = "Profil mis à jour avec succès.";
+        msgOk.style.display = "block";
+      } catch (err) {
+        msgErr.textContent = err.message || "Erreur lors de l'enregistrement.";
+        msgErr.style.display = "block";
+      }
+
+      btn.disabled = false;
+      btn.textContent = "Enregistrer les modifications";
+    });
+
+    // Changer mot de passe
+    document.getElementById("password-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      var msgOk = document.getElementById("msg-pwd-ok");
+      var msgErr = document.getElementById("msg-pwd-err");
+      var btn = document.getElementById("btn-pwd");
+      msgOk.style.display = "none";
+      msgErr.style.display = "none";
+
+      var newPwd = document.getElementById("new-password").value;
+      var confirmPwd = document.getElementById("confirm-password").value;
+
+      if (newPwd.length < 6) {
+        msgErr.textContent = "Le mot de passe doit contenir au moins 6 caractères.";
+        msgErr.style.display = "block";
+        return;
+      }
+      if (newPwd !== confirmPwd) {
+        msgErr.textContent = "Les mots de passe ne correspondent pas.";
+        msgErr.style.display = "block";
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Mise à jour...";
+
+      try {
+        const { error } = await supabaseClient.auth.updateUser({ password: newPwd });
+        if (error) throw error;
+
+        msgOk.textContent = "Mot de passe mis à jour avec succès.";
+        msgOk.style.display = "block";
+        document.getElementById("new-password").value = "";
+        document.getElementById("confirm-password").value = "";
+      } catch (err) {
+        msgErr.textContent = err.message || "Impossible de changer le mot de passe.";
+        msgErr.style.display = "block";
+      }
+
+      btn.disabled = false;
+      btn.textContent = "Mettre à jour le mot de passe";
+    });
+
     init();
   </script>
 </body>
