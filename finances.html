@@ -7,158 +7,43 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabase.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #f8fafc;
-      color: #0f172a;
-      min-height: 100vh;
-    }
-    .navbar {
-      background: white;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 0 1rem;
-      height: 3.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      text-decoration: none;
-      color: inherit;
-    }
-    .logo span { color: #4f46e5; }
-    .nav-links {
-      display: flex;
-      gap: 0.4rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .nav-links a {
-      font-size: 0.75rem;
-      color: #64748b;
-      text-decoration: none;
-      padding: 0.25rem 0.35rem;
-    }
-    .btn {
-      padding: 0.45rem 0.75rem;
-      border-radius: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 500;
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-    }
-    .btn-primary { background: #4f46e5; color: white; }
-    .btn-secondary {
-      background: white;
-      border: 1px solid #e2e8f0;
-      color: #334155;
-    }
-    main {
-      max-width: 56rem;
-      margin: 0 auto;
-      padding: 1.25rem 1rem 3rem;
-    }
-    h1 { font-size: 1.4rem; margin-bottom: 0.25rem; }
-    .subtitle {
-      color: #64748b;
-      font-size: 0.875rem;
-      margin-bottom: 1.25rem;
-    }
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.75rem;
-      margin-bottom: 1.5rem;
-    }
-    @media (min-width: 480px) {
-      .stats { grid-template-columns: repeat(3, 1fr); }
-    }
-    .stat-card {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
-      padding: 1rem;
-    }
-    .stat-card h3 {
-      font-size: 0.75rem;
-      color: #64748b;
-      font-weight: 500;
-      margin-bottom: 0.35rem;
-    }
-    .stat-card p {
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
-    .stat-card.blue p { color: #1d4ed8; }
-    .stat-card.green p { color: #047857; }
-    .stat-card.orange p { color: #b45309; }
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-    .card {
-      background: white;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.75rem;
-      overflow: hidden;
-    }
-    .card-header {
-      padding: 0.9rem 1rem;
-      border-bottom: 1px solid #e2e8f0;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-    }
-    th, td {
-      text-align: left;
-      padding: 0.7rem 0.6rem;
-      border-bottom: 1px solid #e2e8f0;
-    }
-    th {
-      background: #f8fafc;
-      color: #64748b;
-      font-weight: 500;
-    }
-    .empty {
-      text-align: center;
-      padding: 2.5rem 1rem;
-      color: #64748b;
-    }
-    .empty .icon { font-size: 2rem; margin-bottom: 0.75rem; }
-    .badge {
-      display: inline-block;
-      padding: 0.15rem 0.45rem;
-      border-radius: 9999px;
-      font-size: 0.7rem;
-      font-weight: 500;
-    }
-    .badge-pending { background: #fef3c7; color: #b45309; }
-    .badge-in_progress { background: #dbeafe; color: #1d4ed8; }
-    .badge-completed { background: #d1fae5; color: #047857; }
-    .badge-cancelled { background: #fee2e2; color: #b91c1c; }
-    .reste { font-weight: 600; color: #b45309; }
-    .reste-ok { color: #047857; }
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      color: #64748b;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,-apple-system,sans-serif;background:#f8fafc;color:#0f172a;min-height:100vh}
+    .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+    .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
+    .logo span{color:#4f46e5}
+    .nav-links{display:flex;gap:.35rem;align-items:center;flex-wrap:wrap}
+    .nav-links a{font-size:.75rem;color:#64748b;text-decoration:none;padding:.2rem .3rem}
+    .btn{padding:.45rem .75rem;border-radius:.5rem;font-size:.75rem;font-weight:500;border:none;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center}
+    .btn-primary{background:#4f46e5;color:#fff}
+    .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
+    main{max-width:56rem;margin:0 auto;padding:1.25rem 1rem 3rem}
+    h1{font-size:1.4rem;margin-bottom:.25rem}
+    .subtitle{color:#64748b;font-size:.875rem;margin-bottom:1.25rem}
+    .stats{display:grid;grid-template-columns:1fr;gap:.75rem;margin-bottom:1.5rem}
+    @media(min-width:480px){.stats{grid-template-columns:repeat(3,1fr)}}
+    .stat-card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;padding:1rem}
+    .stat-card h3{font-size:.75rem;color:#64748b;font-weight:500;margin-bottom:.35rem}
+    .stat-card p{font-size:1.2rem;font-weight:700}
+    .stat-card.blue p{color:#1d4ed8}
+    .stat-card.green p{color:#047857}
+    .stat-card.orange p{color:#b45309}
+    .actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1.25rem}
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:.75rem;overflow:hidden}
+    .card-header{padding:.9rem 1rem;border-bottom:1px solid #e2e8f0;font-weight:600;font-size:.9rem}
+    table{width:100%;border-collapse:collapse;font-size:.8rem}
+    th,td{text-align:left;padding:.7rem .6rem;border-bottom:1px solid #e2e8f0}
+    th{background:#f8fafc;color:#64748b;font-weight:500}
+    .empty{text-align:center;padding:2.5rem 1rem;color:#64748b}
+    .empty .icon{font-size:2rem;margin-bottom:.75rem}
+    .badge{display:inline-block;padding:.15rem .45rem;border-radius:9999px;font-size:.7rem;font-weight:500}
+    .badge-pending{background:#fef3c7;color:#b45309}
+    .badge-in_progress{background:#dbeafe;color:#1d4ed8}
+    .badge-completed{background:#d1fae5;color:#047857}
+    .badge-cancelled{background:#fee2e2;color:#b91c1c}
+    .reste{font-weight:600;color:#b45309}
+    .reste-ok{color:#047857}
+    .loading{text-align:center;padding:3rem;color:#64748b}
   </style>
 </head>
 <body>
@@ -173,47 +58,26 @@
       <button class="btn btn-secondary" id="logout-btn">Déconnexion</button>
     </div>
   </header>
-
   <main>
     <div id="loading" class="loading">Chargement...</div>
-
     <div id="content" style="display:none">
       <h1>Finances</h1>
       <p class="subtitle">Suivi des montants facturés, encaissés et restants à recevoir.</p>
-
       <div class="stats">
-        <div class="stat-card blue">
-          <h3>Total facturé</h3>
-          <p id="stat-total">0 FCFA</p>
-        </div>
-        <div class="stat-card green">
-          <h3>Total encaissé</h3>
-          <p id="stat-paid">0 FCFA</p>
-        </div>
-        <div class="stat-card orange">
-          <h3>Reste à recevoir</h3>
-          <p id="stat-reste">0 FCFA</p>
-        </div>
+        <div class="stat-card blue"><h3>Total facturé</h3><p id="stat-total">0 FCFA</p></div>
+        <div class="stat-card green"><h3>Total encaissé</h3><p id="stat-paid">0 FCFA</p></div>
+        <div class="stat-card orange"><h3>Reste à recevoir</h3><p id="stat-reste">0 FCFA</p></div>
       </div>
-
       <div class="actions">
         <a href="projects.html" class="btn btn-primary">Voir les projets</a>
         <a href="clients.html" class="btn btn-secondary">Voir les clients</a>
       </div>
-
       <div class="card">
         <div class="card-header">Détail par projet</div>
-        <div id="table-wrap" style="overflow-x:auto; display:none">
+        <div id="table-wrap" style="overflow-x:auto;display:none">
           <table>
             <thead>
-              <tr>
-                <th>Projet</th>
-                <th>Client</th>
-                <th>Facturé</th>
-                <th>Encaissé</th>
-                <th>Reste</th>
-                <th>Statut</th>
-              </tr>
+              <tr><th>Projet</th><th>Client</th><th>Facturé</th><th>Encaissé</th><th>Reste</th><th>Statut</th></tr>
             </thead>
             <tbody id="finance-tbody"></tbody>
           </table>
@@ -227,116 +91,40 @@
       </div>
     </div>
   </main>
-
   <script>
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    function statusLabel(s) {
-      const map = {
-        pending: "En attente",
-        in_progress: "En cours",
-        completed: "Terminé",
-        cancelled: "Annulé"
-      };
-      return map[s] || s;
-    }
-
-    function escapeHtml(str) {
-      if (!str) return "";
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
-    }
-
-    function formatMoney(n) {
-      return Number(n || 0).toLocaleString("fr-FR") + " FCFA";
-    }
-
-    async function init() {
-      try {
-        const { data: { session } } = await supabaseClient.auth.getSession();
-        if (!session) {
-          window.location.href = "login.html";
-          return;
+    function statusLabel(s){const m={pending:"En attente",in_progress:"En cours",completed:"Terminé",cancelled:"Annulé"};return m[s]||s}
+    function escapeHtml(str){if(!str)return"";return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+    function formatMoney(n){return Number(n||0).toLocaleString("fr-FR")+" FCFA"}
+    async function init(){
+      try{
+        const{data:{session}}=await supabaseClient.auth.getSession();
+        if(!session){window.location.href="login.html";return}
+        const user=session.user;
+        const{data:projects,error}=await supabaseClient.from("projects").select("*, clients(name)").eq("user_id",user.id).order("created_at",{ascending:false});
+        if(error)throw error;
+        const list=projects||[];
+        let total=0,paid=0,reste=0;
+        list.forEach(function(p){var t=Number(p.amount||0),a=Number(p.amount_paid||0);total+=t;paid+=a;reste+=(t-a)});
+        document.getElementById("stat-total").textContent=formatMoney(total);
+        document.getElementById("stat-paid").textContent=formatMoney(paid);
+        document.getElementById("stat-reste").textContent=formatMoney(reste);
+        var tbody=document.getElementById("finance-tbody"),empty=document.getElementById("empty"),tableWrap=document.getElementById("table-wrap");
+        if(list.length===0){tableWrap.style.display="none";empty.style.display="block"}
+        else{
+          empty.style.display="none";tableWrap.style.display="block";
+          tbody.innerHTML=list.map(function(p){
+            var t=Number(p.amount||0),a=Number(p.amount_paid||0),r=t-a;
+            var clientName=p.clients?p.clients.name:"—";
+            var resteClass=r<=0?"reste reste-ok":"reste";
+            return"<tr><td><strong>"+escapeHtml(p.title)+"</strong></td><td>"+escapeHtml(clientName)+"</td><td>"+formatMoney(t)+"</td><td>"+formatMoney(a)+"</td><td class=\""+resteClass+"\">"+formatMoney(r)+"</td><td><span class=\"badge badge-"+p.status+"\">"+statusLabel(p.status)+"</span></td></tr>"
+          }).join("")
         }
-
-        const user = session.user;
-
-        const { data: projects, error } = await supabaseClient
-          .from("projects")
-          .select("*, clients(name)")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false });
-
-        if (error) {
-          console.error(error);
-          throw error;
-        }
-
-        const list = projects || [];
-        let total = 0;
-        let paid = 0;
-        let reste = 0;
-
-        list.forEach(function (p) {
-          var t = Number(p.amount || 0);
-          var a = Number(p.amount_paid || 0);
-          total += t;
-          paid += a;
-          reste += (t - a);
-        });
-
-        document.getElementById("stat-total").textContent = formatMoney(total);
-        document.getElementById("stat-paid").textContent = formatMoney(paid);
-        document.getElementById("stat-reste").textContent = formatMoney(reste);
-
-        var tbody = document.getElementById("finance-tbody");
-        var empty = document.getElementById("empty");
-        var tableWrap = document.getElementById("table-wrap");
-
-        if (list.length === 0) {
-          tableWrap.style.display = "none";
-          empty.style.display = "block";
-        } else {
-          empty.style.display = "none";
-          tableWrap.style.display = "block";
-
-          tbody.innerHTML = list.map(function (p) {
-            var t = Number(p.amount || 0);
-            var a = Number(p.amount_paid || 0);
-            var r = t - a;
-            var clientName = p.clients ? p.clients.name : "—";
-            var resteClass = r <= 0 ? "reste reste-ok" : "reste";
-
-            return (
-              "<tr>" +
-              "<td><strong>" + escapeHtml(p.title) + "</strong></td>" +
-              "<td>" + escapeHtml(clientName) + "</td>" +
-              "<td>" + formatMoney(t) + "</td>" +
-              "<td>" + formatMoney(a) + "</td>" +
-              "<td class=\"" + resteClass + "\">" + formatMoney(r) + "</td>" +
-              "<td><span class=\"badge badge-" + p.status + "\">" + statusLabel(p.status) + "</span></td>" +
-              "</tr>"
-            );
-          }).join("");
-        }
-
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("content").style.display = "block";
-
-        document.getElementById("logout-btn").addEventListener("click", async function () {
-          await supabaseClient.auth.signOut();
-          window.location.href = "login.html";
-        });
-
-      } catch (err) {
-        console.error(err);
-        document.getElementById("loading").textContent = "Erreur de chargement. Réessayez.";
-      }
+        document.getElementById("loading").style.display="none";
+        document.getElementById("content").style.display="block";
+        document.getElementById("logout-btn").addEventListener("click",async function(){await supabaseClient.auth.signOut();window.location.href="login.html"})
+      }catch(err){console.error(err);document.getElementById("loading").textContent="Erreur de chargement."}
     }
-
     init();
   </script>
 </body>
