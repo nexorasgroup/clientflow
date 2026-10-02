@@ -12,8 +12,8 @@
     .navbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:0 1rem;height:3.75rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
     .logo{font-size:1.25rem;font-weight:700;text-decoration:none;color:inherit}
     .logo span{color:#4f46e5}
-    .nav-links{display:flex;gap:.3rem;align-items:center;flex-wrap:wrap}
-    .nav-links a{font-size:.72rem;color:#64748b;text-decoration:none;padding:.15rem .25rem}
+    .nav-links{display:flex;gap:.25rem;align-items:center;flex-wrap:wrap}
+    .nav-links a{font-size:.7rem;color:#64748b;text-decoration:none;padding:.15rem .2rem}
     .btn{padding:.45rem .7rem;border-radius:.5rem;font-size:.75rem;font-weight:500;border:none;cursor:pointer;font-family:inherit}
     .btn-primary{background:#4f46e5;color:#fff}
     .btn-secondary{background:#fff;border:1px solid #e2e8f0;color:#334155}
@@ -56,6 +56,7 @@
       <a href="projects.html">Projets</a>
       <a href="finances.html">Finances</a>
       <a href="profile.html">Profil</a>
+      <a href="plan.html">Plan</a>
       <button class="btn btn-secondary btn-sm" id="logout-btn">Déconnexion</button>
     </div>
   </header>
@@ -69,9 +70,7 @@
       <div id="loading" style="padding:2rem;text-align:center;color:#64748b">Chargement...</div>
       <div id="table-wrap" style="display:none;overflow-x:auto">
         <table>
-          <thead>
-            <tr><th>Titre</th><th>Client</th><th>Total</th><th>Avancé</th><th>Reste</th><th>Statut</th><th>Actions</th></tr>
-          </thead>
+          <thead><tr><th>Titre</th><th>Client</th><th>Total</th><th>Avancé</th><th>Reste</th><th>Statut</th><th>Actions</th></tr></thead>
           <tbody id="projects-tbody"></tbody>
         </table>
       </div>
@@ -89,16 +88,13 @@
       <div id="modal-error" class="error"></div>
       <form id="project-form">
         <input type="hidden" id="project-id"/>
-        <label>Titre *</label>
-        <input type="text" id="project-title" required/>
-        <label>Client</label>
-        <select id="project-client"><option value="">— Aucun —</option></select>
+        <label>Titre *</label><input type="text" id="project-title" required/>
+        <label>Client</label><select id="project-client"><option value="">— Aucun —</option></select>
         <label>Montant total (FCFA) *</label>
         <input type="number" id="project-amount" min="0" step="1" value="0" required placeholder="Ex: 1500000"/>
         <label>Montant avancé (FCFA)</label>
         <input type="number" id="project-paid" min="0" step="1" value="0" placeholder="Ex: 500000"/>
-        <label>Description</label>
-        <textarea id="project-description" rows="2"></textarea>
+        <label>Description</label><textarea id="project-description" rows="2"></textarea>
         <label>Statut</label>
         <select id="project-status">
           <option value="pending">En attente</option>
@@ -106,8 +102,7 @@
           <option value="completed">Terminé</option>
           <option value="cancelled">Annulé</option>
         </select>
-        <label>Date d'échéance</label>
-        <input type="date" id="project-due"/>
+        <label>Date d'échéance</label><input type="date" id="project-due"/>
         <div class="modal-actions">
           <button type="button" class="btn btn-secondary" id="btn-cancel">Annuler</button>
           <button type="submit" class="btn btn-primary">Enregistrer</button>
